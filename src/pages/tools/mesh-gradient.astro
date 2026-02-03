@@ -1,0 +1,462 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout>
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+        <!-- Preview Area (Left/Top) -->
+        <div class="flex-1 order-2 lg:order-1">
+            <div
+                id="mesh-container"
+                class="relative w-full aspect-video rounded-2xl border border-black/5 dark:border-white/10 overflow-hidden shadow-2xl bg-black transition-colors duration-500 group"
+            >
+                <!-- Grid/Guides Overlay (Optional, useful when editing) -->
+                <div
+                    class="absolute inset-0 pointer-events-none z-50 border-2 border-transparent transition-colors group-hover:border-black/5 dark:group-hover:border-white/5"
+                >
+                </div>
+
+                <!-- Draggable Area Overlay -->
+                <div
+                    id="interaction-layer"
+                    class="absolute inset-0 z-40 cursor-crosshair"
+                >
+                </div>
+
+                <!-- The Mesh Points -->
+                <div id="mesh-content" class="absolute inset-0 w-full h-full">
+                    <!-- Points injected via JS -->
+                </div>
+            </div>
+
+            <div
+                class="mt-6 p-4 bg-white dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/10 shadow-sm dark:shadow-none"
+            >
+                <div class="flex items-center justify-between mb-2">
+                    <span
+                        class="text-xs font-medium text-gray-500 dark:text-white/50 uppercase tracking-wider"
+                        >Generated CSS</span
+                    >
+                    <button
+                        id="copy-btn"
+                        class="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 transition-colors flex items-center gap-1"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            ><rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"></rect><path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path></svg
+                        >
+                        Copy Code
+                    </button>
+                </div>
+                <code
+                    id="css-output"
+                    class="block w-full bg-gray-50 dark:bg-black/50 p-3 rounded-lg text-xs text-gray-700 dark:text-white/70 font-mono overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-transparent"
+                >
+                    background-color: #000000; background-image: ...
+                </code>
+            </div>
+        </div>
+
+        <!-- Controls Sidebar (Right/Bottom) -->
+        <div class="w-full lg:w-80 order-1 lg:order-2 space-y-6">
+            <div
+                class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-2xl p-6 shadow-sm dark:shadow-none"
+            >
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                        Mesh Controls
+                    </h2>
+                    <button
+                        id="randomize-btn"
+                        class="p-2 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white transition-colors"
+                        title="Randomize"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            ><polyline points="23 4 23 10 17 10"
+                            ></polyline><polyline points="1 20 1 14 7 14"
+                            ></polyline><path
+                                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                            ></path></svg
+                        >
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label
+                            class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-2"
+                            >Background Color</label
+                        >
+                        <div class="flex gap-2">
+                            <input
+                                type="color"
+                                id="bg-color"
+                                value="#000000"
+                                class="w-10 h-10 rounded cursor-pointer border-0 p-0 bg-transparent"
+                            />
+                            <input
+                                type="text"
+                                id="bg-color-text"
+                                value="#000000"
+                                class="flex-1 bg-gray-100 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-white/70 font-mono outline-none focus:border-purple-500/50"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="h-px bg-gray-200 dark:bg-white/10 my-4"></div>
+
+                    <div id="points-list" class="space-y-3">
+                        <!-- Point controls loop -->
+                    </div>
+
+                    <button
+                        id="add-point-btn"
+                        class="w-full py-2 border border-dashed border-gray-300 dark:border-white/20 rounded-lg text-sm text-gray-500 dark:text-white/50 hover:border-purple-500/50 hover:text-purple-600 dark:hover:text-purple-400 transition-colors mt-4"
+                    >
+                        + Add Color Point
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    type Point = {
+        id: number;
+        x: number; // percentage 0-100
+        y: number; // percentage 0-100
+        color: string;
+        size: number; // px or % (let's use view height percentage vh for responsiveness, or just %)
+    };
+
+    let points: Point[] = [
+        { id: 1, x: 20, y: 30, color: "#9333ea", size: 50 },
+        { id: 2, x: 80, y: 20, color: "#3b82f6", size: 60 },
+        { id: 3, x: 50, y: 80, color: "#ec4899", size: 55 },
+        { id: 4, x: 10, y: 90, color: "#10b981", size: 45 },
+    ];
+    let bgColor = "#050505";
+    let draggingPointId: number | null = null;
+
+    // Elements
+    const meshContainer = document.getElementById("mesh-container");
+    const meshContent = document.getElementById("mesh-content");
+    const interactionLayer = document.getElementById("interaction-layer");
+    const cssOutput = document.getElementById("css-output");
+    const pointsList = document.getElementById("points-list");
+    const inputBgColor = document.getElementById(
+        "bg-color",
+    ) as HTMLInputElement;
+    const inputBgColorText = document.getElementById(
+        "bg-color-text",
+    ) as HTMLInputElement;
+    const randomizeBtn = document.getElementById("randomize-btn");
+    const addPointBtn = document.getElementById("add-point-btn");
+
+    function init() {
+        renderPoints();
+        renderControls();
+        updateCSS();
+        setupEvents();
+    }
+
+    function setupEvents() {
+        // Dragging Logic
+        interactionLayer?.addEventListener("mousedown", (e) => {
+            // Check if clicked near a point
+            const rect = interactionLayer.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+            const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+            // Allow selecting point within 5% radius
+            const point = points.find((p) => {
+                const dx = p.x - clickX;
+                const dy = p.y - clickY;
+                return dx * dx + dy * dy < 25; // 5% * 5% = 25
+            });
+
+            if (point) {
+                draggingPointId = point.id;
+            }
+        });
+
+        window.addEventListener("mousemove", (e) => {
+            if (draggingPointId !== null && interactionLayer) {
+                const rect = interactionLayer.getBoundingClientRect();
+                let newX = ((e.clientX - rect.left) / rect.width) * 100;
+                let newY = ((e.clientY - rect.top) / rect.height) * 100;
+
+                // Clamp
+                newX = Math.max(0, Math.min(100, newX));
+                newY = Math.max(0, Math.min(100, newY));
+
+                const point = points.find((p) => p.id === draggingPointId);
+                if (point) {
+                    point.x = newX;
+                    point.y = newY;
+                    renderPoints(); // Efficient enough?
+                    updateCSS();
+                    renderControls(); // To update values in inputs if we had position inputs
+                }
+            }
+        });
+
+        window.addEventListener("mouseup", () => {
+            draggingPointId = null;
+        });
+
+        // Bg Color
+        inputBgColor.addEventListener("input", (e) => {
+            bgColor = (e.target as HTMLInputElement).value;
+            inputBgColorText.value = bgColor;
+            if (meshContainer) meshContainer.style.backgroundColor = bgColor;
+            updateCSS();
+        });
+        inputBgColorText.addEventListener("input", (e) => {
+            const val = (e.target as HTMLInputElement).value;
+            if (val.match(/^#[0-9A-F]{6}$/i)) {
+                bgColor = val;
+                inputBgColor.value = bgColor;
+                if (meshContainer)
+                    meshContainer.style.backgroundColor = bgColor;
+                updateCSS();
+            }
+        });
+
+        randomizeBtn?.addEventListener("click", randomize);
+        addPointBtn?.addEventListener("click", addPoint);
+
+        document.getElementById("copy-btn")?.addEventListener("click", () => {
+            const code = cssOutput?.innerText || "";
+            navigator.clipboard.writeText(code);
+            const btn = document.getElementById("copy-btn");
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = "Copied!";
+                setTimeout(() => (btn.innerHTML = originalHTML), 2000);
+            }
+        });
+    }
+
+    function renderPoints() {
+        if (!meshContent) return;
+        meshContent.innerHTML = "";
+
+        // We use radial gradients for points
+        // Doing it as multiple absolute divs inside a blur container is smoother for browser composition
+
+        points.forEach((p) => {
+            const div = document.createElement("div");
+            div.className =
+                "absolute rounded-full blur-[80px] md:blur-[120px] opacity-70 mix-blend-screen pointer-events-none transform -translate-x-1/2 -translate-y-1/2";
+            div.style.left = `${p.x}%`;
+            div.style.top = `${p.y}%`;
+            div.style.width = `${p.size}%`; // Using % width relative to container
+            div.style.height = `${p.size}%`; // Ideally square relative to width, but let's stretch
+            // Actually, aspect-ratio might be weird. Let's base it on container average or just use vw/vh if full screen, but here it's inside a div.
+            // Let's assume container is approx 16:9.
+            // Let's use fixed aspect ratio for the blob to be round-ish.
+            div.style.paddingBottom = `${p.size}%`; // padding-bottom hack for aspect ratio
+            div.style.backgroundColor = p.color;
+            div.style.zIndex = "10";
+
+            meshContent.appendChild(div);
+
+            // Add a visual handle on interaction layer for dragging
+            if (interactionLayer) {
+                const handle = document.createElement("div");
+                handle.className = `absolute w-4 h-4 rounded-full border-2 border-white bg-${p.id === draggingPointId ? "white" : "transparent"} shadow-lg transform -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all`;
+                handle.style.left = `${p.x}%`;
+                handle.style.top = `${p.y}%`;
+                // interactionLayer handles rendering handles? No, it's just cleaner to keep DOM separate.
+                // Actually let's just render handles directly in interaction layer if we want to show them.
+                // For now, let's skip visible handles to keep it "magical" or add simplified ones.
+                // Let's add them to meshContent but with high z-index and no blur
+            }
+        });
+
+        // Visual Handles (Separate Loop to keep on top)
+        const handlesContainer = document.createElement("div");
+        handlesContainer.className =
+            "absolute inset-0 z-50 pointer-events-none";
+        points.forEach((p) => {
+            const handle = document.createElement("div");
+            handle.className =
+                "absolute w-6 h-6 rounded-full border-2 border-white box-content shadow-lg transform -translate-x-1/2 -translate-y-1/2 transition-transform";
+            handle.style.left = `${p.x}%`;
+            handle.style.top = `${p.y}%`;
+            handle.style.backgroundColor = p.color;
+            handlesContainer.appendChild(handle);
+        });
+        // Clear previous handles
+        const existingHandles =
+            meshContainer?.querySelector(".handles-container");
+        if (existingHandles) existingHandles.remove();
+
+        handlesContainer.classList.add("handles-container");
+        meshContainer?.appendChild(handlesContainer);
+    }
+
+    function renderControls() {
+        if (!pointsList) return;
+        pointsList.innerHTML = "";
+
+        points.forEach((p, index) => {
+            const item = document.createElement("div");
+            item.className =
+                "flex items-center gap-3 p-3 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 transition-colors";
+            item.innerHTML = `
+                <div class="w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold text-black/50" style="background-color: ${p.color}">${index + 1}</div>
+                <input type="color" class="w-8 h-8 rounded cursor-pointer border-0 p-0 bg-transparent point-color-input" data-id="${p.id}" value="${p.color}">
+                <div class="flex-1 flex flex-col gap-1">
+                    <label class="text-[10px] text-gray-500 dark:text-white/40">Size</label>
+                    <input type="range" min="20" max="100" value="${p.size}" class="w-full h-1 bg-gray-300 dark:bg-white/10 rounded-lg appearance-none cursor-pointer point-size-input" data-id="${p.id}">
+                </div>
+                <button class="text-gray-400 dark:text-white/20 hover:text-red-500 dark:hover:text-red-400 transition-colors remove-point-btn" data-id="${p.id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            `;
+            pointsList.appendChild(item);
+        });
+
+        // Add listeners for new controls
+        document.querySelectorAll(".point-color-input").forEach((input) => {
+            input.addEventListener("input", (e) => {
+                const id = parseInt(
+                    (e.target as HTMLElement).dataset.id || "0",
+                );
+                const p = points.find((pt) => pt.id === id);
+                if (p) {
+                    p.color = (e.target as HTMLInputElement).value;
+                    renderPoints();
+                    updateCSS();
+                    // Update the number badge color too for instant feedback
+                    (e.target as HTMLElement).parentElement!.querySelector(
+                        "div",
+                    )!.style.backgroundColor = p.color;
+                }
+            });
+        });
+
+        document.querySelectorAll(".point-size-input").forEach((input) => {
+            input.addEventListener("input", (e) => {
+                const id = parseInt(
+                    (e.target as HTMLElement).dataset.id || "0",
+                );
+                const p = points.find((pt) => pt.id === id);
+                if (p) {
+                    p.size = parseInt((e.target as HTMLInputElement).value);
+                    renderPoints();
+                    updateCSS();
+                }
+            });
+        });
+
+        document.querySelectorAll(".remove-point-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const id = parseInt(
+                    (e.target as HTMLElement).closest("button")!.dataset.id ||
+                        "0",
+                );
+                if (points.length > 1) {
+                    points = points.filter((p) => p.id !== id);
+                    renderPoints();
+                    renderControls();
+                    updateCSS();
+                }
+            });
+        });
+    }
+
+    function addPoint() {
+        if (points.length >= 10) return;
+        const newId = Math.max(...points.map((p) => p.id), 0) + 1;
+        points.push({
+            id: newId,
+            x: 50,
+            y: 50,
+            color: "#ffffff",
+            size: 50,
+        });
+        renderPoints();
+        renderControls();
+        updateCSS();
+    }
+
+    function randomize() {
+        // Randomize positions and colors
+        const colors = [
+            "#f472b6",
+            "#3b82f6",
+            "#10b981",
+            "#f59e0b",
+            "#ef4444",
+            "#8b5cf6",
+            "#06b6d4",
+        ];
+
+        // Randomize bg color too, but keep it darkish for mesh contrast by default, or just black
+        // Let's keep it consistent
+        bgColor = "#000000";
+        inputBgColor.value = bgColor;
+        inputBgColorText.value = bgColor;
+
+        points.forEach((p) => {
+            p.x = Math.random() * 100;
+            p.y = Math.random() * 100;
+            p.color = colors[Math.floor(Math.random() * colors.length)];
+            p.size = 40 + Math.random() * 40;
+        });
+
+        if (meshContainer) meshContainer.style.backgroundColor = bgColor;
+
+        renderPoints();
+        renderControls();
+        updateCSS();
+    }
+
+    function updateCSS() {
+        if (!cssOutput) return;
+
+        // We'll generate a CSS that mocks the structure
+        const gradients = points.map((p) => {
+            return `radial-gradient(at ${Math.round(p.x)}% ${Math.round(p.y)}%, ${p.color} 0px, transparent 50%)`;
+        });
+
+        const css = `
+background-color: ${bgColor};
+background-image: 
+${gradients.join(",\n")};
+        `.trim();
+
+        cssOutput.innerText = css;
+    }
+
+    init();
+</script>

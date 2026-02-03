@@ -1,0 +1,511 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout>
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Controls Sidebar -->
+        <div
+            class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-2xl p-6 h-fit lg:sticky lg:top-24 space-y-6 shadow-sm dark:shadow-none"
+        >
+            <div class="space-y-2">
+                <h2
+                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400"
+                >
+                    Dot Art Settings
+                </h2>
+                <p class="text-xs text-gray-500 dark:text-white/40">
+                    Customize your generation
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Upload -->
+                <div>
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-white/70 mb-2"
+                        >Source Image</label
+                    >
+                    <div
+                        id="drop-zone"
+                        class="relative border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl p-8 text-center transition-colors hover:border-purple-500/50 cursor-pointer group bg-gray-50 dark:bg-white/5"
+                    >
+                        <input
+                            type="file"
+                            id="image-upload"
+                            accept="image/*"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div class="space-y-2 pointer-events-none">
+                            <div
+                                class="w-10 h-10 mx-auto rounded-full bg-gray-200 dark:bg-white/5 flex items-center justify-center text-gray-400 dark:text-white/40 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    ><path
+                                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                    ></path><polyline points="17 8 12 3 7 8"
+                                    ></polyline><line
+                                        x1="12"
+                                        y1="3"
+                                        x2="12"
+                                        y2="15"></line></svg
+                                >
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-white/50">
+                                Drop image or <span
+                                    class="text-purple-600 dark:text-purple-400 font-medium"
+                                    >browse</span
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-1"
+                            >Dot Size</label
+                        >
+                        <input
+                            type="number"
+                            id="dot-size"
+                            value="4"
+                            min="1"
+                            max="50"
+                            class="w-full bg-gray-100 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-purple-500/50 outline-none transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-1"
+                            >Gap / Spacing</label
+                        >
+                        <input
+                            type="number"
+                            id="gap-size"
+                            value="8"
+                            min="2"
+                            max="100"
+                            class="w-full bg-gray-100 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-purple-500/50 outline-none transition-colors"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-1"
+                        >Threshold (0-255)</label
+                    >
+                    <input
+                        type="range"
+                        id="threshold"
+                        value="200"
+                        min="0"
+                        max="255"
+                        class="w-full h-2 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label
+                        class="text-sm font-medium text-gray-700 dark:text-white/70"
+                        >Invert Colors</label
+                    >
+                    <input
+                        type="checkbox"
+                        id="invert"
+                        class="w-4 h-4 rounded border-gray-300 dark:border-white/20 bg-gray-100 dark:bg-white/5 accent-purple-500 cursor-pointer"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-2"
+                        >Shape</label
+                    >
+                    <div
+                        class="flex p-1 bg-gray-100 dark:bg-black/50 rounded-lg border border-gray-200 dark:border-white/10"
+                    >
+                        <button
+                            class="flex-1 py-1.5 text-xs rounded-md bg-white dark:bg-white/10 text-gray-900 dark:text-white font-medium shadow-sm transition-all"
+                            data-shape="circle">Circle</button
+                        >
+                        <button
+                            class="flex-1 py-1.5 text-xs rounded-md text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            data-shape="rect">Square</button
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-1"
+                        >Dot Color</label
+                    >
+                    <div class="flex gap-2">
+                        <input
+                            type="color"
+                            id="dot-color"
+                            value="#ffffff"
+                            class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent p-0"
+                        />
+                        <div class="flex-1">
+                            <select
+                                id="color-mode"
+                                class="w-full h-full bg-gray-100 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 text-sm text-gray-700 dark:text-white/70 focus:border-purple-500/50 outline-none transition-colors"
+                            >
+                                <option value="solid">Solid Color</option>
+                                <option value="original"
+                                    >Original Image Colors</option
+                                >
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                id="download-btn"
+                class="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-xl hover:bg-gray-800 dark:hover:bg-purple-100 transition-colors flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    ></path><polyline points="7 10 12 15 17 10"></polyline><line
+                        x1="12"
+                        y1="15"
+                        x2="12"
+                        y2="3"></line></svg
+                >
+                Download SVG
+            </button>
+        </div>
+
+        <!-- Preview Area -->
+        <div class="lg:col-span-2 min-h-[500px] flex flex-col">
+            <div
+                class="flex-1 bg-white dark:bg-[#050505] border border-black/5 dark:border-white/5 rounded-2xl flex items-center justify-center p-8 overflow-hidden relative checkerboard-bg"
+            >
+                <div
+                    id="preview-container"
+                    class="max-w-full max-h-[70vh] shadow-2xl dark:shadow-purple-900/10 shadow-black/10"
+                >
+                    <!-- SVG Rendered Here -->
+                    <div
+                        class="text-gray-400 dark:text-white/20 text-sm flex flex-col items-center gap-3"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="48"
+                            height="48"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            ><rect
+                                x="3"
+                                y="3"
+                                width="18"
+                                height="18"
+                                rx="2"
+                                ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"
+                            ></circle><polyline points="21 15 16 10 5 21"
+                            ></polyline></svg
+                        >
+                        <span>Preview will appear here</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    :global(.dark) .checkerboard-bg {
+        background-image:
+            linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+            linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+            linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+        background-size: 20px 20px;
+        background-position:
+            0 0,
+            0 10px,
+            10px -10px,
+            -10px 0px;
+    }
+
+    .checkerboard-bg {
+        background-color: #f9fafb;
+        background-image:
+            linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+            linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+        background-size: 20px 20px;
+        background-position:
+            0 0,
+            0 10px,
+            10px -10px,
+            -10px 0px;
+    }
+</style>
+
+<script>
+    let currentImage = null;
+    const canvas = document.createElement("canvas"); // Off-screen canvas
+    const ctx = canvas.getContext("2d");
+
+    // Elements
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById(
+        "image-upload",
+    ) as HTMLInputElement;
+    const previewContainer = document.getElementById("preview-container");
+    const downloadBtn = document.getElementById("download-btn");
+
+    // Inputs
+    const dotSizeInput = document.getElementById(
+        "dot-size",
+    ) as HTMLInputElement;
+    const gapSizeInput = document.getElementById(
+        "gap-size",
+    ) as HTMLInputElement;
+    const thresholdInput = document.getElementById(
+        "threshold",
+    ) as HTMLInputElement;
+    const invertInput = document.getElementById("invert") as HTMLInputElement;
+    const shapeButtons = document.querySelectorAll("button[data-shape]");
+    const dotColorInput = document.getElementById(
+        "dot-color",
+    ) as HTMLInputElement;
+    const colorModeInput = document.getElementById(
+        "color-mode",
+    ) as HTMLInputElement;
+
+    let settings = {
+        dotSize: 4,
+        gap: 8,
+        threshold: 200,
+        invert: false,
+        shape: "circle",
+        color: "#ffffff",
+        colorMode: "solid",
+    };
+
+    function init() {
+        setupEventListeners();
+        // Check local storage for theme to set default dot color
+        const theme = localStorage.getItem("theme");
+        if (theme === "light") {
+            settings.color = "#000000";
+            if (dotColorInput) dotColorInput.value = "#000000";
+        }
+    }
+
+    function setupEventListeners() {
+        fileInput.addEventListener("change", handleFileSelect);
+
+        // Controls
+        dotSizeInput.addEventListener("input", (e) => {
+            settings.dotSize =
+                parseInt((e.target as HTMLInputElement).value) || 1;
+            generateSVG();
+        });
+        gapSizeInput.addEventListener("input", (e) => {
+            settings.gap = parseInt((e.target as HTMLInputElement).value) || 2;
+            generateSVG();
+        });
+        thresholdInput.addEventListener("input", (e) => {
+            settings.threshold = parseInt((e.target as HTMLInputElement).value);
+            generateSVG();
+        });
+        invertInput.addEventListener("change", (e) => {
+            settings.invert = (e.target as HTMLInputElement).checked;
+            generateSVG();
+        });
+
+        shapeButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                settings.shape = (btn as HTMLElement).dataset.shape || "circle";
+                shapeButtons.forEach((b) => {
+                    b.classList.remove(
+                        "bg-white/10",
+                        "bg-white",
+                        "text-white",
+                        "text-gray-900",
+                        "shadow-sm",
+                    );
+                    b.classList.add("text-gray-500", "dark:text-white/50");
+                    // Re-add hover
+                });
+                // Check theme for active state style
+                const isDark =
+                    document.documentElement.classList.contains("dark");
+
+                // Simplify logic: just use explicit classes via JS or better, Toggle class
+                // But our HTML structure relies on hard replacement in the loop above which is messy with dark mode classes.
+                // Let's just fix visual by re-applying base classes + active
+
+                // Better approach: toggle 'active' class and styling in CSS?
+                // For now, let's just cheat and apply hard classes.
+                btn.classList.add(
+                    "bg-white",
+                    "dark:bg-white/10",
+                    "text-gray-900",
+                    "dark:text-white",
+                    "shadow-sm",
+                );
+                btn.classList.remove("text-gray-500", "dark:text-white/50");
+
+                generateSVG();
+            });
+        });
+
+        dotColorInput.addEventListener("input", (e) => {
+            settings.color = (e.target as HTMLInputElement).value;
+            generateSVG();
+        });
+        colorModeInput.addEventListener("change", (e) => {
+            settings.colorMode = (e.target as HTMLInputElement).value;
+            generateSVG();
+        });
+
+        downloadBtn?.addEventListener("click", downloadSVG);
+    }
+
+    function handleFileSelect(e: Event) {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    currentImage = img;
+                    generateSVG();
+                };
+                img.src = event.target?.result as string;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function generateSVG() {
+        if (!currentImage || !previewContainer) return;
+
+        // Calculate dimensions
+        const aspect = currentImage.width / currentImage.height;
+        let width = currentImage.width;
+        let height = currentImage.height;
+
+        // Limit max processing size for performance (e.g., max 1000px width)
+        const MAX_WIDTH = 800;
+        if (width > MAX_WIDTH) {
+            width = MAX_WIDTH;
+            height = width / aspect;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        if (!ctx) return;
+
+        // Draw image to canvas
+        ctx.drawImage(currentImage, 0, 0, width, height);
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+
+        let svgContent = "";
+        const r = settings.dotSize / 2;
+
+        // grid loops
+        for (let y = 0; y < height; y += settings.gap) {
+            for (let x = 0; x < width; x += settings.gap) {
+                // Get average brightness of the chunk
+                let totalBrightness = 0;
+                let count = 0;
+                let rVal = 0,
+                    gVal = 0,
+                    bVal = 0;
+
+                for (let dy = 0; dy < settings.gap; dy++) {
+                    for (let dx = 0; dx < settings.gap; dx++) {
+                        const px = x + dx;
+                        const py = y + dy;
+                        if (px < width && py < height) {
+                            const i = (py * width + px) * 4;
+                            const brightness =
+                                (data[i] + data[i + 1] + data[i + 2]) / 3;
+                            totalBrightness += brightness;
+                            rVal += data[i];
+                            gVal += data[i + 1];
+                            bVal += data[i + 2];
+                            count++;
+                        }
+                    }
+                }
+
+                const avgBrightness = totalBrightness / count;
+                const showDot = settings.invert
+                    ? avgBrightness > settings.threshold
+                    : avgBrightness < settings.threshold;
+
+                if (showDot) {
+                    let fill = settings.color;
+                    if (settings.colorMode === "original") {
+                        fill = `rgb(${Math.round(rVal / count)}, ${Math.round(gVal / count)}, ${Math.round(bVal / count)})`;
+                    }
+
+                    if (settings.shape === "circle") {
+                        svgContent += `<circle cx="${x + settings.gap / 2}" cy="${y + settings.gap / 2}" r="${r}" fill="${fill}" />`;
+                    } else {
+                        svgContent += `<rect x="${x + settings.gap / 2 - r}" y="${y + settings.gap / 2 - r}" width="${settings.dotSize}" height="${settings.dotSize}" fill="${fill}" />`;
+                    }
+                }
+            }
+        }
+
+        const svg = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">${svgContent}</svg>`;
+
+        previewContainer.innerHTML = svg;
+    }
+
+    function downloadSVG() {
+        if (!previewContainer || !previewContainer.querySelector("svg")) return;
+
+        const svgData = previewContainer.innerHTML;
+        const blob = new Blob([svgData], {
+            type: "image/svg+xml;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `jex-dot-art-${Date.now()}.svg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    init();
+</script>
