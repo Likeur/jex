@@ -264,18 +264,21 @@ animation: twinkle 4s ease-in-out infinite alternate;
   </div>
 
   <!-- Main Previewer -->
-  <div class="mb-12 relative group rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg transition-all duration-500 min-h-[300px] flex items-center justify-center bg-[#111]" id="main-preview">
+  <div class="mb-12 relative group rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg transition-all duration-500 min-h-[300px]" id="main-preview">
     <div class="absolute inset-0 transition-all duration-500 rounded-2xl overflow-hidden" id="preview-bg"></div>
     
     <!-- Preview Content -->
-    <div class="relative z-10 p-8 text-center max-w-lg mx-auto bg-black/40 backdrop-blur-md rounded-xl border border-white/10 shadow-xl">
-      <h2 class="text-2xl font-bold text-white mb-2">Live Animation</h2>
-      <p class="text-white/80 mb-6">Select an animation to preview it.</p>
-      
-      <div class="flex gap-4 justify-center">
-        <button class="px-4 py-2 bg-white text-black font-medium rounded-lg hover:bg-white/90 transition-colors" id="fullscreen-btn">
-          Full Screen
+    <!-- Preview Content -->
+    <div class="relative divide-x divide-white/10 z-10 py-2 px-4 bg-black/40 rounded-br-2xl border-r border-b border-white/10 w-max flex items-center gap-4">
+      <h2 class="text-md font-medium text-white pr-3">Live Preview</h2>
+      <div class="flex gap-4 items-center">
+        <button class="p-2 rounded-md hover:bg-black/20 border border-transparent hover:border-white/5 transition-colors " id="fullscreen-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+</svg>
+
         </button>
+        
       </div>
     </div>
   </div>
@@ -571,9 +574,9 @@ animation: twinkle 4s ease-in-out infinite alternate;
   document.addEventListener('fullscreenchange', () => {
     if (fullscreenBtn) {
       if (document.fullscreenElement) {
-        fullscreenBtn.innerText = 'Exit Full Screen';
+        fullscreenBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5"> <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" /></svg>';
       } else {
-        fullscreenBtn.innerText = 'Full Screen';
+        fullscreenBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>';
       }
     }
   });
