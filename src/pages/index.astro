@@ -156,72 +156,109 @@ import Layout from "../layouts/Layout.astro";
 				</p>
 			</div>
 		</a>
+		<!-- Tool Card 4 -->
+	<a
+		href="/tools/animated-backgrounds"
+		class="group relative block p-8 rounded-2xl bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 hover:border-amber-500/50 hover:shadow-lg dark:hover:bg-white/10 transition-all duration-300 overflow-hidden"
+	>
+		<div
+			class="absolute inset-0 bg-gradient-to-br from-amber-500/5 dark:from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+		>
+		</div>
+		<div class="relative z-10">
+			<div
+				class="w-12 h-12 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center mb-4 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					><rect x="2" y="3" width="20" height="14" rx="2" ry="2"
+					></rect><line x1="8" y1="21" x2="16" y2="21"></line><line
+						x1="12"
+						y1="17"
+						x2="12"
+						y2="21"></line></svg
+				>
+			</div>
+			<h3
+				class="text-xl font-semibold mb-2 text-gray-900 dark:text-white"
+			>
+				Animated BG
+			</h3>
+			<p class="text-sm text-gray-500 dark:text-white/50">
+				Bring your UI to life with high-performance CSS-only animated
+				backgrounds.
+			</p>
+		</div>
+	</a>
 	</div>
 
-	<!-- Features Deep Dive -->
-	<div class="border-t border-black/5 dark:border-white/5 pt-24 pb-12">
-		<div class="text-center mb-16">
-			<h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-				Why use Jex?
-			</h2>
-			<p class="text-gray-600 dark:text-white/60 max-w-2xl mx-auto">
-				Built to simplify the creative process for developers. No
-				complex configurations, just useful tools that do one thing
-				well.
+	
+</Layout>
+
+<!-- Features Deep Dive -->
+<div class="border-t border-black/5 dark:border-white/5 pt-24 pb-12">
+	<div class="text-center mb-16">
+		<h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+			Why use Jex?
+		</h2>
+		<p class="text-gray-600 dark:text-white/60 max-w-2xl mx-auto">
+			Built to simplify the creative process for developers. No complex
+			configurations, just useful tools that do one thing well.
+		</p>
+	</div>
+
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+		<div class="space-y-4">
+			<h3
+				class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2"
+			>
+				<span class="w-2 h-2 rounded-full bg-purple-500"></span>
+				Dot Art Generator
+			</h3>
+			<p class="text-sm text-gray-600 dark:text-white/60 leading-relaxed">
+				Upload any image and instantly convert it into a scalable SVG
+				dot matrix. Control the density, dot size, and color blending.
+				Perfect for creating abstract tech-themed graphics or data
+				visualizations from raster images.
 			</p>
 		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-			<div class="space-y-4">
-				<h3
-					class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2"
-				>
-					<span class="w-2 h-2 rounded-full bg-purple-500"></span>
-					Dot Art Generator
-				</h3>
-				<p
-					class="text-sm text-gray-600 dark:text-white/60 leading-relaxed"
-				>
-					Upload any image and instantly convert it into a scalable
-					SVG dot matrix. Control the density, dot size, and color
-					blending. Perfect for creating abstract tech-themed graphics
-					or data visualizations from raster images.
-				</p>
-			</div>
+		<div class="space-y-4">
+			<h3
+				class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2"
+			>
+				<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+				Mesh Gradients
+			</h3>
+			<p class="text-sm text-gray-600 dark:text-white/60 leading-relaxed">
+				Forget static linear gradients. Design organic, flowing color
+				meshes that feel alive. Drag control points to shape the light
+				and color, then export pure CSS code that works in any browser
+				without heavy image assets.
+			</p>
+		</div>
 
-			<div class="space-y-4">
-				<h3
-					class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2"
-				>
-					<span class="w-2 h-2 rounded-full bg-blue-500"></span>
-					Mesh Gradients
-				</h3>
-				<p
-					class="text-sm text-gray-600 dark:text-white/60 leading-relaxed"
-				>
-					Forget static linear gradients. Design organic, flowing
-					color meshes that feel alive. Drag control points to shape
-					the light and color, then export pure CSS code that works in
-					any browser without heavy image assets.
-				</p>
-			</div>
-
-			<div class="space-y-4">
-				<h3
-					class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2"
-				>
-					<span class="w-2 h-2 rounded-full bg-pink-500"></span>
-					Instant Backgrounds
-				</h3>
-				<p
-					class="text-sm text-gray-600 dark:text-white/60 leading-relaxed"
-				>
-					Stop hunting for background patterns. Access a library of
-					modern, high-quality CSS backgrounds including grids, subtle
-					noise, and geometric shapes. One click to copy the CSS and
-					drop it into your project.
-				</p>
-			</div>
+		<div class="space-y-4">
+			<h3
+				class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2"
+			>
+				<span class="w-2 h-2 rounded-full bg-pink-500"></span>
+				Instant Backgrounds
+			</h3>
+			<p class="text-sm text-gray-600 dark:text-white/60 leading-relaxed">
+				Stop hunting for background patterns. Access a library of
+				modern, high-quality CSS backgrounds including grids, subtle
+				noise, and geometric shapes. One click to copy the CSS and drop
+				it into your project.
+			</p>
 		</div>
 	</div>
-</Layout>
+</div>

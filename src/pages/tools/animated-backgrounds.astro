@@ -1,0 +1,580 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const animations = [
+  {
+    name: 'Moving Gradient',
+    id: 'gradient-move',
+    class: 'anim-gradient',
+    css: `background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4);
+background-size: 600% 600%;
+animation: gradientAnimation 6s ease infinite;
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}`
+  },
+  {
+    name: 'Drifting Grid',
+    id: 'grid-drift',
+    class: 'anim-grid',
+    css: `background-size: 40px 40px;
+background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+animation: gridMove 20s linear infinite;
+
+@keyframes gridMove {
+    from { background-position: 0 0; }
+    to { background-position: 40px 40px; }
+}`
+  },
+  {
+    name: 'Pulse Circle',
+    id: 'pulse-circle',
+    class: 'anim-pulse',
+    css: `background-color: #000;
+background-image: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+background-size: 100% 100%;
+background-position: center;
+background-repeat: no-repeat;
+animation: pulse 4s ease-in-out infinite;
+
+@keyframes pulse {
+    0% { background-size: 50% 50%; opacity: 0.5; }
+    50% { background-size: 80% 80%; opacity: 1; }
+    100% { background-size: 50% 50%; opacity: 0.5; }
+}`
+  },
+  {
+    name: 'Animated Mesh',
+    id: 'anim-mesh',
+    class: 'anim-mesh',
+    css: `background-color: #000;
+background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 10s ease infinite;
+
+@keyframes meshContent {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}`
+  },
+  {
+      name: 'Sunset Flow',
+      id: 'mesh-sunset',
+      class: 'anim-mesh-sunset',
+      css: `background-color: #220a0a;
+background-image: 
+    radial-gradient(at 0% 100%, hsla(28,100%,74%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(189,100%,56%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 100%, hsla(340,100%,76%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 10s ease infinite;
+
+@keyframes meshContent {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}`
+  },
+  {
+      name: 'Ocean Tides',
+      id: 'mesh-ocean',
+      class: 'anim-mesh-ocean',
+      css: `background-color: #000022;
+background-image: 
+    radial-gradient(at 0% 0%, hsla(200,100%,40%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 100%, hsla(180,100%,50%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(220,100%,40%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 12s ease infinite;`
+  },
+  {
+      name: 'Aurora Borealis',
+      id: 'mesh-aurora',
+      class: 'anim-mesh-aurora',
+      css: `background-color: #001;
+background-image: 
+    radial-gradient(at 10% 10%, hsla(150,100%,40%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 90%, hsla(280,100%,40%,1) 0, transparent 50%), 
+    radial-gradient(at 90% 10%, hsla(200,100%,40%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 15s ease infinite;`
+  },
+  {
+      name: 'Neon City',
+      id: 'mesh-neon',
+      class: 'anim-mesh-neon',
+      css: `background-color: #1a0b2e;
+background-image: 
+    radial-gradient(at 0% 100%, hsla(320,100%,50%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(260,100%,60%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 100%, hsla(180,100%,50%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 8s ease infinite;`
+  },
+  {
+      name: 'Pastel Dream',
+      id: 'mesh-pastel',
+      class: 'anim-mesh-pastel',
+      css: `background-color: #fff0f5;
+background-image: 
+    radial-gradient(at 0% 0%, hsla(340,100%,85%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 100%, hsla(220,100%,85%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(60,100%,85%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 12s ease infinite;`
+  },
+  {
+      name: 'Deep Space',
+      id: 'mesh-space',
+      class: 'anim-mesh-space',
+      css: `background-color: #000;
+background-image: 
+    radial-gradient(at 20% 20%, hsla(260,50%,20%,1) 0, transparent 50%), 
+    radial-gradient(at 80% 80%, hsla(220,50%,20%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 20s ease infinite;`
+  },
+  {
+      name: 'Forest Mist',
+      id: 'mesh-forest',
+      class: 'anim-mesh-forest',
+      css: `background-color: #051a05;
+background-image: 
+    radial-gradient(at 0% 100%, hsla(140,60%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(100,60%,20%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 18s ease infinite;`
+  },
+  {
+      name: 'Golden Luxe',
+      id: 'mesh-gold',
+      class: 'anim-mesh-gold',
+      css: `background-color: #2e2005;
+background-image: 
+    radial-gradient(at 0% 0%, hsla(45,100%,50%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 100%, hsla(30,100%,40%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 10s ease infinite;`
+  },
+  {
+      name: 'Royal Velvet',
+      id: 'mesh-royal',
+      class: 'anim-mesh-royal',
+      css: `background-color: #1a001a;
+background-image: 
+    radial-gradient(at 50% 0%, hsla(300,100%,20%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 100%, hsla(260,100%,30%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 14s ease infinite;`
+  },
+  {
+      name: 'Icy Glare',
+      id: 'mesh-ice',
+      class: 'anim-mesh-ice',
+      css: `background-color: #e0f0ff;
+background-image: 
+    radial-gradient(at 0% 100%, hsla(200,100%,80%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(180,100%,90%,1) 0, transparent 50%);
+background-size: 200% 200%;
+animation: meshContent 15s ease infinite;`
+  },
+  {
+    name: 'Ribbon Flow',
+    id: 'anim-ribbon',
+    class: 'anim-ribbon',
+    css: `background: repeating-linear-gradient(
+    45deg,
+    #606dbc,
+    #606dbc 10px,
+    #465298 10px,
+    #465298 20px
+);
+background-size: 200% 200%;
+animation: ribbonMove 20s linear infinite;
+
+@keyframes ribbonMove {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}`
+  },
+  {
+      name: 'Shooting Stars',
+      id: 'shooting-stars',
+      class: 'anim-shooting',
+      css: `background-color: #0d0d1a;
+background-image: 
+    conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.05) 0deg, transparent 60deg, transparent 300deg, rgba(255,255,255,0.05) 360deg),
+    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px);
+background-size: 100% 100%, 550px 550px;
+animation: rotateStars 60s linear infinite;
+overflow: hidden;
+
+@keyframes rotateStars {
+    from { background-position: 0% 0%; }
+    to { background-position: 100% 100%; }
+}`
+  },
+  {
+      name: 'Scanning line',
+      id: 'scan-line',
+      class: 'anim-scan',
+      css: `background: linear-gradient(to bottom, transparent 50%, rgba(32, 255, 77, 0.1) 51%, transparent 52%);
+background-size: 100% 200%;
+animation: scan 3s linear infinite;
+
+@keyframes scan {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 0% 100%; }
+}`
+  },
+  {
+      name: 'Twinkling Stars',
+      id: 'twinkle',
+      class: 'anim-stars',
+      css: `background-color: #000;
+background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0));
+background-size: 200px 200px;
+animation: twinkle 4s ease-in-out infinite alternate;
+
+@keyframes twinkle {
+    0% { opacity: 0.3; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1.1); }
+}`
+  }
+];
+---
+
+<Layout>
+  <div class="text-center mb-12">
+    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-500 dark:from-white dark:to-white/60 mb-3">Animated Backgrounds</h1>
+    <p class="text-gray-600 dark:text-white/50">High-performance CSS-only animated backgrounds. No JS required (except for copying).</p>
+  </div>
+
+  <!-- Main Previewer -->
+  <div class="mb-12 relative group rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg transition-all duration-500 min-h-[300px] flex items-center justify-center bg-[#111]" id="main-preview">
+    <div class="absolute inset-0 transition-all duration-500 rounded-2xl overflow-hidden" id="preview-bg"></div>
+    
+    <!-- Preview Content -->
+    <div class="relative z-10 p-8 text-center max-w-lg mx-auto bg-black/40 backdrop-blur-md rounded-xl border border-white/10 shadow-xl">
+      <h2 class="text-2xl font-bold text-white mb-2">Live Animation</h2>
+      <p class="text-white/80 mb-6">Select an animation to preview it.</p>
+      
+      <div class="flex gap-4 justify-center">
+        <button class="px-4 py-2 bg-white text-black font-medium rounded-lg hover:bg-white/90 transition-colors" id="fullscreen-btn">
+          Full Screen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {animations.map((anim) => (
+      <div 
+        class="group relative bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-xl overflow-hidden hover:border-black/20 dark:hover:border-white/20 transition-all shadow-sm dark:shadow-none cursor-pointer bg-card-item"
+        data-class={anim.class}
+      >
+        <!-- Preview -->
+        <div class={`h-48 w-full ${anim.class} rounded-t-xl`}></div>
+        
+        <!-- Info & Actions -->
+        <div class="p-4 flex items-center justify-between border-t border-black/5 dark:border-white/5 bg-gray-50 dark:bg-[#0a0a0a]">
+           <span class="font-medium text-gray-800 dark:text-white/80">{anim.name}</span>
+           <button class="copy-btn px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-900 dark:text-white transition-colors" data-css={anim.css}>
+             Copy CSS
+           </button>
+        </div>
+      </div>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  /* Define animations globally so they work in preview */
+  
+  /* Moving Gradient */
+  .anim-gradient {
+    background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4);
+    background-size: 600% 600%;
+    animation: gradientAnimation 6s ease infinite;
+  }
+  @keyframes gradientAnimation {
+      0% { background-position: 0% 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0% 50% }
+  }
+
+  /* Drifting Grid */
+  .anim-grid {
+    background-color: #1a1a1a;
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+      from { background-position: 0 0; }
+      to { background-position: 40px 40px; }
+  }
+
+  /* Pulse Circle */
+  .anim-pulse {
+    background-color: #000;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+      0% { background-size: 50% 50%; opacity: 0.5; }
+      50% { background-size: 80% 80%; opacity: 1; }
+      100% { background-size: 50% 50%; opacity: 0.5; }
+  }
+
+  /* Animated Mesh */
+  .anim-mesh {
+    background-color: #000;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 10s ease infinite;
+  }
+  @keyframes meshContent {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+  }
+
+  .anim-mesh-sunset {
+    background-color: #220a0a;
+    background-image: 
+        radial-gradient(at 0% 100%, hsla(28,100%,74%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(189,100%,56%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 100%, hsla(340,100%,76%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 10s ease infinite;
+  }
+  .anim-mesh-ocean {
+    background-color: #000022;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(200,100%,40%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 100%, hsla(180,100%,50%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(220,100%,40%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 12s ease infinite;
+  }
+  .anim-mesh-aurora {
+    background-color: #001;
+    background-image: 
+        radial-gradient(at 10% 10%, hsla(150,100%,40%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 90%, hsla(280,100%,40%,1) 0, transparent 50%), 
+        radial-gradient(at 90% 10%, hsla(200,100%,40%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 15s ease infinite;
+  }
+  .anim-mesh-neon {
+    background-color: #1a0b2e;
+    background-image: 
+        radial-gradient(at 0% 100%, hsla(320,100%,50%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(260,100%,60%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 100%, hsla(180,100%,50%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 8s ease infinite;
+  }
+  .anim-mesh-pastel {
+    background-color: #fff0f5;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(340,100%,85%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 100%, hsla(220,100%,85%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(60,100%,85%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 12s ease infinite;
+  }
+  .anim-mesh-space {
+    background-color: #000;
+    background-image: 
+        radial-gradient(at 20% 20%, hsla(260,50%,20%,1) 0, transparent 50%), 
+        radial-gradient(at 80% 80%, hsla(220,50%,20%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 20s ease infinite;
+  }
+  .anim-mesh-forest {
+    background-color: #051a05;
+    background-image: 
+        radial-gradient(at 0% 100%, hsla(140,60%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(100,60%,20%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 18s ease infinite;
+  }
+  .anim-mesh-gold {
+    background-color: #2e2005;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(45,100%,50%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 100%, hsla(30,100%,40%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 10s ease infinite;
+  }
+  .anim-mesh-royal {
+    background-color: #1a001a;
+    background-image: 
+        radial-gradient(at 50% 0%, hsla(300,100%,20%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 100%, hsla(260,100%,30%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 14s ease infinite;
+  }
+  .anim-mesh-ice {
+    background-color: #e0f0ff;
+    background-image: 
+        radial-gradient(at 0% 100%, hsla(200,100%,80%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(180,100%,90%,1) 0, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshContent 15s ease infinite;
+  }
+
+  /* Ribbon Flow */
+  .anim-ribbon {
+    background: repeating-linear-gradient(
+        45deg,
+        #606dbc,
+        #606dbc 10px,
+        #465298 10px,
+        #465298 20px
+    );
+    background-size: 200% 200%;
+    animation: ribbonMove 20s linear infinite;
+  }
+  @keyframes ribbonMove {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+  }
+
+  /* Shooting Stars (Space Rotation) */
+  .anim-shooting {
+    background-color: #0d0d1a;
+    background-image: 
+        conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.05) 0deg, transparent 60deg, transparent 300deg, rgba(255,255,255,0.05) 360deg),
+        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px);
+    background-size: 100% 100%, 550px 550px;
+    animation: rotateStars 60s linear infinite;
+    overflow: hidden; /* Important for rotation */
+  }
+  @keyframes rotateStars {
+      from { background-position: 0% 0%; }
+      to { background-position: 100% 100%; } 
+      /* Simplified for background-position as rotation of background-image is hard without pseudo-elements */
+  }
+
+  /* Scan Line */
+  .anim-scan {
+    background-color: #000;
+    background-image: linear-gradient(to bottom, transparent 50%, rgba(32, 255, 77, 0.2) 51%, transparent 52%);
+    background-size: 100% 200%;
+    animation: scan 3s linear infinite;
+  }
+  @keyframes scan {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 0% 100%; }
+  }
+
+  /* Twinkling Stars */
+  .anim-stars {
+      background-color: #050510;
+      background-image: 
+          radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+          radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+          radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+          radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+          radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+          radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+      background-size: 200px 200px;
+      animation: twinkle 4s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+  }
+
+</style>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(button => {
+    const btn = button as HTMLElement;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); 
+      const css = btn.dataset.css || '';
+      navigator.clipboard.writeText(css);
+      
+      const originalText = btn.innerText;
+      btn.innerText = 'Copied!';
+      btn.classList.add('bg-green-100', 'dark:bg-green-500/20', 'text-green-600', 'dark:text-green-400');
+      btn.classList.remove('bg-gray-200', 'dark:bg-white/10', 'text-gray-900', 'dark:text-white');
+      
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove('bg-green-100', 'dark:bg-green-500/20', 'text-green-600', 'dark:text-green-400');
+        btn.classList.add('bg-gray-200', 'dark:bg-white/10', 'text-gray-900', 'dark:text-white');
+      }, 2000);
+    });
+  });
+
+  // Preview Logic
+  const previewBg = document.getElementById('preview-bg');
+  const mainPreview = document.getElementById('main-preview');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  let currentClass = 'anim-gradient';
+  
+  // Set initial preview
+  previewBg?.classList.add(currentClass);
+
+  document.querySelectorAll('.bg-card-item').forEach(card => {
+    card.addEventListener('click', () => {
+      if (!previewBg) return;
+      
+      const newClass = (card as HTMLElement).dataset.class || '';
+      
+      if (currentClass) {
+        previewBg.classList.remove(currentClass);
+      }
+      
+      previewBg.classList.add(newClass);
+      currentClass = newClass;
+    });
+  });
+
+  fullscreenBtn?.addEventListener('click', () => {
+    if (!mainPreview) return;
+    
+    if (!document.fullscreenElement) {
+      mainPreview.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    if (fullscreenBtn) {
+      if (document.fullscreenElement) {
+        fullscreenBtn.innerText = 'Exit Full Screen';
+      } else {
+        fullscreenBtn.innerText = 'Full Screen';
+      }
+    }
+  });
+</script>

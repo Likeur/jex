@@ -84,6 +84,220 @@ linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
 linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px);
 background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
 background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;`
+  },
+  {
+    name: 'Graph Paper',
+    id: 'paper',
+    class: 'bg-paper',
+    css: `background-color: #1a1a1a;
+background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+background-size: 20px 20px;
+background-position: -1px -1px;`
+  },
+  {
+    name: 'Isometric Grid',
+    id: 'iso',
+    class: 'bg-iso',
+    css: `background-color: #111;
+background-image: linear-gradient(30deg, #222 1px, transparent 1px),
+linear-gradient(150deg, #222 1px, transparent 1px);
+background-size: 40px 40px;`
+  },
+  {
+    name: 'Diagonal Checks',
+    id: 'check-diag',
+    class: 'bg-check-diag',
+    css: `background-color: #151515;
+background-image: repeating-linear-gradient(45deg, #202020 25%, transparent 25%, transparent 75%, #202020 75%, #202020),
+repeating-linear-gradient(45deg, #202020 25%, #151515 25%, #151515 75%, #202020 75%, #202020);
+background-position: 0 0, 10px 10px;
+background-size: 20px 20px;`
+  },
+  {
+    name: 'Stars',
+    id: 'stars',
+    class: 'bg-stars',
+    css: `background-color: #050510;
+background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+background-size: 550px 550px, 350px 350px, 250px 250px;
+background-position: 0 0, 400px 600px, 300px 300px;`
+  },
+  {
+    name: 'Circuit',
+    id: 'circuit',
+    class: 'bg-circuit',
+    css: `background-color: #101010;
+background-image: radial-gradient(#333 1px, transparent 1px),
+linear-gradient(to right, #222 1px, transparent 1px),
+linear-gradient(to bottom, #222 1px, transparent 1px);
+background-size: 20px 20px, 60px 60px, 60px 60px;
+background-position: 0 0, 0 0, 0 0;`
+  },
+  {
+    name: 'Sunset Mesh',
+    id: 'mesh-sunset',
+    class: 'bg-mesh-sunset',
+    css: `background-color: #000;
+background-image: 
+  radial-gradient(at 0% 100%, rgba(200, 100, 100, 0.4) 0px, transparent 50%),
+  radial-gradient(at 100% 0%, rgba(255, 100, 200, 0.3) 0px, transparent 50%),
+  radial-gradient(at 50% 50%, rgba(255, 150, 50, 0.2) 0px, transparent 50%);`
+  },
+  {
+    name: 'Ocean Mesh',
+    id: 'mesh-ocean',
+    class: 'bg-mesh-ocean',
+    css: `background-color: #001;
+background-image: 
+  radial-gradient(at 0% 0%, rgba(0, 100, 200, 0.4) 0px, transparent 50%),
+  radial-gradient(at 100% 100%, rgba(0, 200, 255, 0.3) 0px, transparent 50%),
+  radial-gradient(at 50% 50%, rgba(0, 50, 100, 0.3) 0px, transparent 50%);`
+  },
+  {
+    name: 'Aurora Mesh',
+    id: 'mesh-aurora',
+    class: 'bg-mesh-aurora',
+    css: `background-color: #011;
+background-image: 
+  radial-gradient(at 10% 10%, rgba(50, 250, 150, 0.2) 0px, transparent 50%),
+  radial-gradient(at 90% 90%, rgba(100, 50, 250, 0.3) 0px, transparent 50%),
+  radial-gradient(at 50% 50%, rgba(0, 150, 150, 0.2) 0px, transparent 50%);`
+  },
+  {
+    name: 'Candy Mesh',
+    id: 'mesh-candy',
+    class: 'bg-mesh-candy',
+    css: `background-color: #101;
+background-image: 
+  radial-gradient(at 100% 0%, rgba(255, 100, 200, 0.3) 0px, transparent 50%),
+  radial-gradient(at 0% 100%, rgba(100, 200, 255, 0.3) 0px, transparent 50%),
+  radial-gradient(at 50% 50%, rgba(255, 200, 50, 0.1) 0px, transparent 50%);`
+  },
+  {
+    name: 'Cherry Mesh',
+    id: 'mesh-cherry',
+    class: 'bg-mesh-cherry',
+    css: `background-color: #200;
+background-image: 
+  radial-gradient(at 0% 0%, rgba(255, 50, 100, 0.4) 0px, transparent 50%),
+  radial-gradient(at 100% 100%, rgba(150, 0, 50, 0.5) 0px, transparent 50%);`
+  },
+  {
+    name: 'Emerald Mesh',
+    id: 'mesh-emerald',
+    class: 'bg-mesh-emerald',
+    css: `background-color: #011;
+background-image: 
+  radial-gradient(at 0% 100%, rgba(0, 200, 100, 0.3) 0px, transparent 50%),
+  radial-gradient(at 100% 0%, rgba(50, 255, 200, 0.2) 0px, transparent 50%);`
+  },
+  {
+    name: 'Slate Mesh',
+    id: 'mesh-slate',
+    class: 'bg-mesh-slate',
+    css: `background-color: #1a202c;
+background-image: 
+  radial-gradient(at 50% 0%, rgba(100, 116, 139, 0.4) 0px, transparent 50%),
+  radial-gradient(at 50% 100%, rgba(51, 65, 85, 0.4) 0px, transparent 50%);`
+  },
+  {
+    name: 'Gold Mesh',
+    id: 'mesh-gold',
+    class: 'bg-mesh-gold',
+    css: `background-color: #210;
+background-image: 
+  radial-gradient(at 0% 0%, rgba(255, 215, 0, 0.2) 0px, transparent 50%),
+  radial-gradient(at 100% 100%, rgba(218, 165, 32, 0.2) 0px, transparent 50%);`
+  },
+  {
+    name: 'Ultraviolet Mesh',
+    id: 'mesh-ultraviolet',
+    class: 'bg-mesh-ultraviolet',
+    css: `background-color: #102;
+background-image: 
+  radial-gradient(at 100% 0%, rgba(120, 0, 255, 0.4) 0px, transparent 50%),
+  radial-gradient(at 0% 100%, rgba(50, 0, 150, 0.5) 0px, transparent 50%);`
+  },
+  {
+    name: 'Cyber Mesh',
+    id: 'mesh-cyber',
+    class: 'bg-mesh-cyber',
+    css: `background-color: #001;
+background-image: 
+  radial-gradient(at 0% 0%, rgba(0, 255, 255, 0.3) 0px, transparent 50%),
+  radial-gradient(at 100% 100%, rgba(255, 0, 255, 0.3) 0px, transparent 50%);`
+  },
+  {
+    name: 'Flame Mesh',
+    id: 'mesh-flame',
+    class: 'bg-mesh-flame',
+    css: `background-color: #100;
+background-image: 
+  radial-gradient(at 50% 100%, rgba(255, 100, 0, 0.3) 0px, transparent 50%),
+  radial-gradient(at 50% 0%, rgba(255, 50, 0, 0.2) 0px, transparent 50%);`
+  },
+  {
+    name: 'Aqua Mesh',
+    id: 'mesh-aqua',
+    class: 'bg-mesh-aqua',
+    css: `background-color: #011;
+background-image: 
+  radial-gradient(at 100% 0%, rgba(0, 255, 200, 0.3) 0px, transparent 50%),
+  radial-gradient(at 0% 100%, rgba(0, 150, 255, 0.3) 0px, transparent 50%);`
+  },
+  {
+    name: 'Regal Mesh',
+    id: 'mesh-regal',
+    class: 'bg-mesh-regal',
+    css: `background-color: #101;
+background-image: 
+  radial-gradient(at 0% 0%, rgba(200, 0, 100, 0.2) 0px, transparent 50%),
+  radial-gradient(at 100% 100%, rgba(255, 215, 0, 0.1) 0px, transparent 50%);`
+  },
+  {
+    name: 'Steel Mesh',
+    id: 'mesh-steel',
+    class: 'bg-mesh-steel',
+    css: `background-color: #222;
+background-image: 
+  radial-gradient(at 0% 100%, rgba(200, 200, 200, 0.2) 0px, transparent 50%),
+  radial-gradient(at 100% 0%, rgba(100, 100, 100, 0.2) 0px, transparent 50%);`
+  },
+  {
+    name: 'Divine Rays',
+    id: 'rays-divine',
+    class: 'bg-rays-divine',
+    css: `background-color: #111;
+background-image: repeating-conic-gradient(
+  from 45deg at 50% 50%,
+  rgba(255, 255, 255, 0.05) 0deg 10deg,
+  transparent 10deg 20deg
+);`
+  },
+  {
+    name: 'Golden Hour',
+    id: 'rays-gold',
+    class: 'bg-rays-gold',
+    css: `background-color: #210;
+background-image: repeating-conic-gradient(
+  from 0deg at 50% 100%,
+  rgba(255, 200, 50, 0.1) 0deg 15deg,
+  transparent 15deg 30deg
+);`
+  },
+  {
+    name: 'Midnight Beams',
+    id: 'rays-mid',
+    class: 'bg-rays-mid',
+    css: `background-color: #001;
+background-image: repeating-conic-gradient(
+  from 90deg at 0% 0%,
+  rgba(100, 100, 255, 0.1) 0deg 10deg,
+  transparent 10deg 30deg
+);`
   }
 ];
 ---
@@ -94,9 +308,33 @@ background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;`
     <p class="text-gray-600 dark:text-white/50">Curated collection of drop-in CSS background snippets.</p>
   </div>
 
+  <!-- Main Previewer -->
+  <div class="mb-12 relative group rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg transition-all duration-500 min-h-[300px] flex items-center justify-center" id="main-preview">
+    <div class="absolute inset-0 transition-all duration-500" id="preview-bg"></div>
+    
+    <!-- Preview Content -->
+    <div class="relative z-10 p-8 text-center max-w-lg mx-auto bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-xl">
+      <h2 class="text-2xl font-bold text-white mb-2">Live Preview</h2>
+      <p class="text-white/80 mb-6">Click any card below to see the background applied here.</p>
+      
+      <div class="flex gap-4 justify-center">
+        <button class="px-4 py-2 bg-white text-black font-medium rounded-lg hover:bg-white/90 transition-colors" id="fullscreen-btn">
+          Full Screen
+        </button>
+        <button class="px-4 py-2 bg-black/50 text-white font-medium rounded-lg hover:bg-black/70 transition-colors border border-white/10" id="reset-btn">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {backgrounds.map((bg) => (
-      <div class="group relative bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-xl overflow-hidden hover:border-black/20 dark:hover:border-white/20 transition-all shadow-sm dark:shadow-none">
+      <div 
+        class="group relative bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-xl overflow-hidden hover:border-black/20 dark:hover:border-white/20 transition-all shadow-sm dark:shadow-none cursor-pointer bg-card-item"
+        data-class={bg.class}
+        data-css={bg.css}
+      >
         <!-- Preview -->
         <div class={`h-48 w-full ${bg.class}`} id={`preview-${bg.id}`}></div>
         
@@ -176,12 +414,162 @@ background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;`
     background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
     background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
   }
+  .bg-paper {
+    background-color: #1a1a1a;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+  }
+  .bg-iso {
+    background-color: #111;
+    background-image: linear-gradient(30deg, #222 1px, transparent 1px),
+    linear-gradient(150deg, #222 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg-check-diag {
+    background-color: #151515;
+    background-image: repeating-linear-gradient(45deg, #202020 25%, transparent 25%, transparent 75%, #202020 75%, #202020),
+    repeating-linear-gradient(45deg, #202020 25%, #151515 25%, #151515 75%, #202020 75%, #202020);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+  }
+  .bg-stars {
+    background-color: #050510;
+    background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+    radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 400px 600px, 300px 300px;
+  }
+  .bg-circuit {
+    background-color: #101010;
+    background-image: radial-gradient(#333 1px, transparent 1px),
+    linear-gradient(to right, #222 1px, transparent 1px),
+    linear-gradient(to bottom, #222 1px, transparent 1px);
+    background-size: 20px 20px, 60px 60px, 60px 60px;
+    background-position: 0 0, 0 0, 0 0;
+  }
+  .bg-mesh-sunset {
+    background-color: #000;
+    background-image: 
+      radial-gradient(at 0% 100%, rgba(200, 100, 100, 0.4) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(255, 100, 200, 0.3) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(255, 150, 50, 0.2) 0px, transparent 50%);
+  }
+  .bg-mesh-ocean {
+    background-color: #001;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(0, 100, 200, 0.4) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 200, 255, 0.3) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(0, 50, 100, 0.3) 0px, transparent 50%);
+  }
+  .bg-mesh-aurora {
+    background-color: #011;
+    background-image: 
+      radial-gradient(at 10% 10%, rgba(50, 250, 150, 0.2) 0px, transparent 50%),
+      radial-gradient(at 90% 90%, rgba(100, 50, 250, 0.3) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(0, 150, 150, 0.2) 0px, transparent 50%);
+  }
+  .bg-mesh-candy {
+    background-color: #101;
+    background-image: 
+      radial-gradient(at 100% 0%, rgba(255, 100, 200, 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(100, 200, 255, 0.3) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(255, 200, 50, 0.1) 0px, transparent 50%);
+  }
+  .bg-mesh-cherry {
+    background-color: #200;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(255, 50, 100, 0.4) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(150, 0, 50, 0.5) 0px, transparent 50%);
+  }
+  .bg-mesh-emerald {
+    background-color: #011;
+    background-image: 
+      radial-gradient(at 0% 100%, rgba(0, 200, 100, 0.3) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(50, 255, 200, 0.2) 0px, transparent 50%);
+  }
+  .bg-mesh-slate {
+    background-color: #1a202c;
+    background-image: 
+      radial-gradient(at 50% 0%, rgba(100, 116, 139, 0.4) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(51, 65, 85, 0.4) 0px, transparent 50%);
+  }
+  .bg-mesh-gold {
+    background-color: #210;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(255, 215, 0, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(218, 165, 32, 0.2) 0px, transparent 50%);
+  }
+  .bg-mesh-ultraviolet {
+    background-color: #102;
+    background-image: 
+      radial-gradient(at 100% 0%, rgba(120, 0, 255, 0.4) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(50, 0, 150, 0.5) 0px, transparent 50%);
+  }
+  .bg-mesh-cyber {
+    background-color: #001;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(0, 255, 255, 0.3) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(255, 0, 255, 0.3) 0px, transparent 50%);
+  }
+  .bg-mesh-flame {
+    background-color: #100;
+    background-image: 
+      radial-gradient(at 50% 100%, rgba(255, 100, 0, 0.3) 0px, transparent 50%),
+      radial-gradient(at 50% 0%, rgba(255, 50, 0, 0.2) 0px, transparent 50%);
+  }
+  .bg-mesh-aqua {
+    background-color: #011;
+    background-image: 
+      radial-gradient(at 100% 0%, rgba(0, 255, 200, 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(0, 150, 255, 0.3) 0px, transparent 50%);
+  }
+  .bg-mesh-regal {
+    background-color: #101;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(200, 0, 100, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(255, 215, 0, 0.1) 0px, transparent 50%);
+  }
+  .bg-mesh-steel {
+    background-color: #222;
+    background-image: 
+      radial-gradient(at 0% 100%, rgba(200, 200, 200, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(100, 100, 100, 0.2) 0px, transparent 50%);
+  }
+  .bg-rays-divine {
+    background-color: #111;
+    background-image: repeating-conic-gradient(
+      from 45deg at 50% 50%,
+      rgba(255, 255, 255, 0.05) 0deg 10deg,
+      transparent 10deg 20deg
+    );
+  }
+  .bg-rays-gold {
+    background-color: #210;
+    background-image: repeating-conic-gradient(
+      from 0deg at 50% 100%,
+      rgba(255, 200, 50, 0.1) 0deg 15deg,
+      transparent 15deg 30deg
+    );
+  }
+  .bg-rays-mid {
+    background-color: #001;
+    background-image: repeating-conic-gradient(
+      from 90deg at 0% 0%,
+      rgba(100, 100, 255, 0.1) 0deg 10deg,
+      transparent 10deg 30deg
+    );
+  }
 </style>
 
 <script>
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const css = (btn as HTMLElement).dataset.css || '';
+  document.querySelectorAll('.copy-btn').forEach(button => {
+    const btn = button as HTMLElement;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent triggering preview when clicking copy
+      const css = btn.dataset.css || '';
       navigator.clipboard.writeText(css);
       
       const originalText = btn.innerText;
@@ -195,5 +583,62 @@ background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;`
         btn.classList.add('bg-gray-200', 'dark:bg-white/10', 'text-gray-900', 'dark:text-white');
       }, 2000);
     });
+  });
+
+  // Preview Logic
+  const previewBg = document.getElementById('preview-bg');
+  const mainPreview = document.getElementById('main-preview');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  let currentClass = 'bg-grid';
+  
+  // Set initial preview
+  previewBg?.classList.add(currentClass);
+
+  document.querySelectorAll('.bg-card-item').forEach(card => {
+    card.addEventListener('click', () => {
+      if (!previewBg) return;
+      
+      const newClass = (card as HTMLElement).dataset.class || '';
+      
+      if (currentClass) {
+        previewBg.classList.remove(currentClass);
+      }
+      
+      previewBg.classList.add(newClass);
+      currentClass = newClass;
+    });
+  });
+
+  fullscreenBtn?.addEventListener('click', () => {
+    if (!mainPreview) return;
+    
+    if (!document.fullscreenElement) {
+      // Enter fullscreen
+      mainPreview.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
+      });
+    } else {
+      // Exit fullscreen
+      document.exitFullscreen();
+    }
+  });
+
+  // Update button text on fullscreen change
+  document.addEventListener('fullscreenchange', () => {
+    if (fullscreenBtn) {
+      if (document.fullscreenElement) {
+        fullscreenBtn.innerText = 'Exit Full Screen';
+      } else {
+        fullscreenBtn.innerText = 'Full Screen';
+      }
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    if (!previewBg) return;
+    if (currentClass) previewBg.classList.remove(currentClass);
+    currentClass = 'bg-grid';
+    previewBg.classList.add(currentClass);
   });
 </script>
