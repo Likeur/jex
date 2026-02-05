@@ -2,7 +2,7 @@
 
 Jex is a collection of high-performance, premium tools designed for frontend developers to speed up their workflow and add stunning visual elements to their projects with minimal effort.
 
-![Jex Preview](/favikonjex.png)
+![Jex Preview](./public/previewjex.png)
 
 ## ✨ Features
 
