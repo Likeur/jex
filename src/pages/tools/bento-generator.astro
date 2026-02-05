@@ -1,0 +1,657 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+    title="Bento Grid Generator | Jex"
+    description="Create responsive Bento grids and export CSS or Tailwind code instantly."
+>
+    <!-- Main Tool Container -->
+    <div
+        class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 h-[calc(100vh-140px)] min-h-[600px]"
+    >
+        <!-- Preview Area (Left/Top) -->
+        <div
+            class="flex-1 order-2 lg:order-1 flex flex-col gap-4 min-h-[400px]"
+        >
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                    Preview
+                </h2>
+                <div class="flex gap-2">
+                    <div
+                        class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-lg text-xs"
+                    >
+                        <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                        <span class="text-gray-500 dark:text-white/50"
+                            >Item</span
+                        >
+                    </div>
+                    <div
+                        class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-lg text-xs"
+                    >
+                        <span
+                            class="w-20 h-3 rounded-sm bg-gray-200 dark:bg-white/20"
+                        ></span>
+                        <span class="text-gray-500 dark:text-white/50"
+                            >Grid Gap</span
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="flex-1 bg-gray-100 dark:bg-[#050505] border border-black/5 dark:border-white/5 rounded-2xl p-8 overflow-hidden relative checkerboard-bg flex items-center justify-center overflow-y-auto"
+            >
+                <div
+                    id="grid-preview"
+                    class="w-full max-w-4xl h-full transition-all duration-300 grid auto-rows-min"
+                >
+                    <!-- Grid Items will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Sidebar (Right/Bottom) -->
+        <div
+            class="w-full lg:w-96 order-1 lg:order-2 flex flex-col gap-6 h-full overflow-y-auto pr-2"
+        >
+            <div class="space-y-4">
+                <div>
+                    <h2
+                        class="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-b from-gray-900 to-gray-500 dark:from-white dark:to-white/60 mb-2"
+                    >
+                        Bento Grid
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-white/50">
+                        Design your layout & export code.
+                    </p>
+                </div>
+
+                <!-- Grid Settings -->
+                <div
+                    class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4"
+                >
+                    <h3
+                        class="text-sm font-semibold text-gray-900 dark:text-white"
+                    >
+                        Grid Settings
+                    </h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label
+                                class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-1"
+                                >Columns</label
+                            >
+                            <input
+                                type="number"
+                                id="grid-cols"
+                                min="1"
+                                max="12"
+                                value="4"
+                                class="w-full bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-purple-500/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-medium text-gray-500 dark:text-white/60 mb-1"
+                                >Gap (px)</label
+                            >
+                            <input
+                                type="number"
+                                id="grid-gap"
+                                min="0"
+                                max="100"
+                                value="16"
+                                class="w-full bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:border-purple-500/50 transition-colors"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Manager -->
+                <div
+                    class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4 flex-1"
+                >
+                    <div class="flex items-center justify-between">
+                        <h3
+                            class="text-sm font-semibold text-gray-900 dark:text-white"
+                        >
+                            Items
+                        </h3>
+                        <button
+                            id="add-item-btn"
+                            class="text-xs font-medium bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg hover:opacity-80 transition-opacity"
+                        >
+                            + Add Item
+                        </button>
+                    </div>
+
+                    <div
+                        id="items-list"
+                        class="space-y-2 max-h-[300px] overflow-y-auto pr-1"
+                    >
+                        <!-- Items list -->
+                    </div>
+                </div>
+
+                <!-- Code Output -->
+                <div
+                    class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4"
+                >
+                    <div
+                        class="flex items-center gap-2 p-1 bg-gray-100 dark:bg-white/5 rounded-lg w-fit"
+                    >
+                        <button
+                            class="px-3 py-1 text-xs font-medium rounded-md bg-white dark:bg-white/10 shadow-sm text-gray-900 dark:text-white transition-all code-tab-btn"
+                            data-tab="tailwind">Tailwind</button
+                        >
+                        <button
+                            class="px-3 py-1 text-xs font-medium rounded-md text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white transition-all code-tab-btn"
+                            data-tab="css">CSS</button
+                        >
+                    </div>
+
+                    <div class="relative group">
+                        <pre
+                            id="code-output"
+                            class="text-xs font-mono bg-gray-50 dark:bg-black/50 p-4 rounded-lg text-gray-700 dark:text-white/70 overflow-x-auto whitespace-pre-wrap border border-gray-200 dark:border-white/5 min-h-[100px]">
+                        </pre>
+                        <button
+                            id="copy-code-btn"
+                            class="absolute top-2 right-2 text-xs bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 p-1.5 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity text-gray-600 dark:text-white/80 hover:text-purple-600 dark:hover:text-purple-400"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                ><rect
+                                    x="9"
+                                    y="9"
+                                    width="13"
+                                    height="13"
+                                    rx="2"
+                                    ry="2"></rect><path
+                                    d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path></svg
+                            >
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Common Layouts -->
+                <div
+                    class="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-2xl p-5 shadow-sm dark:shadow-none space-y-4"
+                >
+                    <h3
+                        class="text-sm font-semibold text-gray-900 dark:text-white"
+                    >
+                        Common Layouts
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3" id="presets-container">
+                        <!-- Presets injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    :global(.dark) .checkerboard-bg {
+        background-color: #050505;
+        background-image:
+            linear-gradient(45deg, #111 25%, transparent 25%),
+            linear-gradient(-45deg, #111 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #111 75%),
+            linear-gradient(-45deg, transparent 75%, #111 75%);
+        background-size: 20px 20px;
+        background-position:
+            0 0,
+            0 10px,
+            10px -10px,
+            -10px 0px;
+    }
+
+    .checkerboard-bg {
+        background-color: #f9fafb;
+        background-image:
+            linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+            linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+        background-size: 20px 20px;
+        background-position:
+            0 0,
+            0 10px,
+            10px -10px,
+            -10px 0px;
+    }
+</style>
+
+<script>
+    type BentoItem = {
+        id: string;
+        colSpan: number;
+        rowSpan: number;
+    };
+
+    type Preset = {
+        name: string;
+        gridCols: number;
+        items: { colSpan: number; rowSpan: number }[];
+    };
+
+    const presets: Preset[] = [
+        {
+            name: "Portfolio Hero",
+            gridCols: 4,
+            items: [
+                { colSpan: 2, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 2, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Dashboard",
+            gridCols: 4,
+            items: [
+                { colSpan: 1, rowSpan: 3 }, // Sidebar
+                { colSpan: 3, rowSpan: 1 }, // Header
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 3, rowSpan: 1 }, // Footer/Graph
+            ],
+        },
+        {
+            name: "Instagram",
+            gridCols: 3,
+            items: [
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Feature Grid",
+            gridCols: 2,
+            items: [
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Complex Mix",
+            gridCols: 4,
+            items: [
+                { colSpan: 2, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 2, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Masonry Lite",
+            gridCols: 3,
+            items: [
+                { colSpan: 1, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Product Showcase",
+            gridCols: 3,
+            items: [
+                { colSpan: 2, rowSpan: 2 }, // Main Product
+                { colSpan: 1, rowSpan: 1 }, // Detail 1
+                { colSpan: 1, rowSpan: 1 }, // Detail 2
+                { colSpan: 1, rowSpan: 1 }, // CTA
+                { colSpan: 2, rowSpan: 1 }, // Description
+            ],
+        },
+        {
+            name: "Blog Archive",
+            gridCols: 3,
+            items: [
+                { colSpan: 3, rowSpan: 1 }, // Featured
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 2, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Gallery",
+            gridCols: 4,
+            items: [
+                { colSpan: 2, rowSpan: 2 },
+                { colSpan: 2, rowSpan: 2 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+            ],
+        },
+        {
+            name: "Stats Board",
+            gridCols: 4,
+            items: [
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 1, rowSpan: 1 },
+                { colSpan: 2, rowSpan: 1 },
+                { colSpan: 2, rowSpan: 1 },
+                { colSpan: 4, rowSpan: 2 }, // Big Chart
+            ],
+        },
+    ];
+
+    let items: BentoItem[] = [
+        { id: crypto.randomUUID(), colSpan: 2, rowSpan: 2 },
+        { id: crypto.randomUUID(), colSpan: 1, rowSpan: 1 },
+        { id: crypto.randomUUID(), colSpan: 1, rowSpan: 1 },
+        { id: crypto.randomUUID(), colSpan: 1, rowSpan: 2 },
+        { id: crypto.randomUUID(), colSpan: 1, rowSpan: 1 },
+        { id: crypto.randomUUID(), colSpan: 2, rowSpan: 1 },
+    ];
+
+    let gridCols = 4;
+    let gridGap = 16;
+    let activeTab = "tailwind";
+
+    // Elements
+    const gridPreview = document.getElementById("grid-preview");
+    const itemsList = document.getElementById("items-list");
+    const codeOutput = document.getElementById("code-output");
+    const gridColsInput = document.getElementById(
+        "grid-cols",
+    ) as HTMLInputElement;
+    const gridGapInput = document.getElementById(
+        "grid-gap",
+    ) as HTMLInputElement;
+    const addItemBtn = document.getElementById("add-item-btn");
+    const tabBtns = document.querySelectorAll(".code-tab-btn");
+    const copyCodeBtn = document.getElementById("copy-code-btn");
+    const presetsContainer = document.getElementById("presets-container");
+
+    function init() {
+        setupListeners();
+        renderPresets();
+        render();
+    }
+
+    function renderPresets() {
+        if (!presetsContainer) return;
+
+        presetsContainer.innerHTML = presets
+            .map(
+                (preset, index) => `
+            <button class="preset-btn flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-gray-300 dark:border-white/10 hover:border-purple-500 dark:hover:border-purple-500/50 hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-all text-center gap-2" data-index="${index}">
+                <div class="w-full aspect-video bg-gray-100 dark:bg-white/5 rounded-md p-1 grid gap-[2px]" style="grid-template-columns: repeat(${preset.gridCols}, 1fr)">
+                     ${preset.items
+                         .slice(0, 8)
+                         .map(
+                             (i) => `
+                        <div class="bg-gray-300 dark:bg-white/20 rounded-[1px]" style="grid-column: span ${Math.min(i.colSpan, preset.gridCols)}; grid-row: span ${i.rowSpan}"></div>
+                     `,
+                         )
+                         .join("")}
+                </div>
+                <span class="text-xs font-medium text-gray-700 dark:text-white/70">${preset.name}</span>
+            </button>
+        `,
+            )
+            .join("");
+
+        document.querySelectorAll(".preset-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const index = parseInt(
+                    (btn as HTMLElement).dataset.index || "0",
+                );
+                loadPreset(presets[index]);
+            });
+        });
+    }
+
+    function loadPreset(preset: Preset) {
+        gridCols = preset.gridCols;
+        gridColsInput.value = gridCols.toString();
+
+        items = preset.items.map((i) => ({
+            id: crypto.randomUUID(),
+            colSpan: i.colSpan,
+            rowSpan: i.rowSpan,
+        }));
+
+        render();
+    }
+
+    function setupListeners() {
+        gridColsInput.addEventListener("input", (e) => {
+            let val = parseInt((e.target as HTMLInputElement).value);
+            if (val < 1) val = 1;
+            if (val > 12) val = 12; // Grid caps at 12 usually reasonable
+            gridCols = val;
+            render();
+        });
+
+        gridGapInput.addEventListener("input", (e) => {
+            gridGap = parseInt((e.target as HTMLInputElement).value) || 0;
+            render();
+        });
+
+        addItemBtn?.addEventListener("click", () => {
+            items.push({ id: crypto.randomUUID(), colSpan: 1, rowSpan: 1 });
+            render();
+        });
+
+        tabBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                activeTab = (btn as HTMLElement).dataset.tab || "tailwind";
+                // Update UI state
+                tabBtns.forEach((b) => {
+                    b.classList.remove(
+                        "bg-white",
+                        "dark:bg-white/10",
+                        "shadow-sm",
+                        "text-gray-900",
+                        "dark:text-white",
+                    );
+                    b.classList.add("text-gray-500", "dark:text-white/50");
+                });
+                btn.classList.add(
+                    "bg-white",
+                    "dark:bg-white/10",
+                    "shadow-sm",
+                    "text-gray-900",
+                    "dark:text-white",
+                );
+                btn.classList.remove("text-gray-500", "dark:text-white/50");
+
+                updateCode();
+            });
+        });
+
+        copyCodeBtn?.addEventListener("click", () => {
+            const code = codeOutput?.innerText || "";
+            navigator.clipboard.writeText(code);
+            const originalHTML = copyCodeBtn.innerHTML;
+            copyCodeBtn.innerHTML =
+                '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            setTimeout(() => {
+                copyCodeBtn.innerHTML = originalHTML;
+            }, 2000);
+        });
+    }
+
+    function render() {
+        renderPreview();
+        renderItemsList();
+        updateCode();
+    }
+
+    function renderPreview() {
+        if (!gridPreview) return;
+
+        gridPreview.style.display = "grid";
+        gridPreview.style.gridTemplateColumns = `repeat(${gridCols}, minmax(0, 1fr))`;
+        gridPreview.style.gap = `${gridGap}px`;
+
+        // Populate items
+        gridPreview.innerHTML = items
+            .map(
+                (item, index) => `
+            <div 
+                class="bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-xl relative group flex items-center justify-center text-gray-400 dark:text-white/20 text-xs font-mono select-none hover:border-purple-500/50 hover:bg-purple-500/5 transition-colors"
+                style="grid-column: span ${item.colSpan}; grid-row: span ${item.rowSpan}; min-height: 100px;">
+                <span class="opacity-50 group-hover:opacity-100">Item ${index + 1}</span>
+                <span class="absolute bottom-2 right-2 text-[10px] opacity-0 group-hover:opacity-100 bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded">${item.colSpan}x${item.rowSpan}</span>
+            </div>
+        `,
+            )
+            .join("");
+    }
+
+    function renderItemsList() {
+        if (!itemsList) return;
+
+        itemsList.innerHTML = items
+            .map(
+                (item, index) => `
+            <div class="p-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 rounded-lg flex flex-col gap-2 group">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-medium text-gray-700 dark:text-white/70">Item ${index + 1}</span>
+                    <button class="text-gray-400 hover:text-red-500 remove-item-btn" data-id="${item.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="flex flex-col gap-0.5">
+                        <label class="text-[10px] text-gray-500 dark:text-white/40">Col Span</label>
+                        <input type="number" min="1" max="${gridCols}" value="${item.colSpan}" class="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded px-2 py-1 text-xs outline-none focus:border-purple-500/50 item-colspan-input" data-id="${item.id}">
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                        <label class="text-[10px] text-gray-500 dark:text-white/40">Row Span</label>
+                        <input type="number" min="1" max="12" value="${item.rowSpan}" class="w-full bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded px-2 py-1 text-xs outline-none focus:border-purple-500/50 item-rowspan-input" data-id="${item.id}">
+                    </div>
+                </div>
+            </div>
+        `,
+            )
+            .join("");
+
+        // Re-attach listeners for dynamic elements
+        document.querySelectorAll(".remove-item-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const id = (e.currentTarget as HTMLElement).dataset.id;
+                items = items.filter((i) => i.id !== id);
+                render();
+            });
+        });
+
+        document.querySelectorAll(".item-colspan-input").forEach((input) => {
+            input.addEventListener("input", (e) => {
+                const id = (e.target as HTMLElement).dataset.id;
+                const val = parseInt((e.target as HTMLInputElement).value) || 1;
+                const item = items.find((i) => i.id === id);
+                if (item) {
+                    item.colSpan = Math.min(Math.max(val, 1), gridCols); // Clamp to gridCols
+                    renderPreview();
+                    updateCode();
+                }
+            });
+        });
+
+        document.querySelectorAll(".item-rowspan-input").forEach((input) => {
+            input.addEventListener("input", (e) => {
+                const id = (e.target as HTMLElement).dataset.id;
+                const val = parseInt((e.target as HTMLInputElement).value) || 1;
+                const item = items.find((i) => i.id === id);
+                if (item) {
+                    item.rowSpan = Math.max(val, 1);
+                    renderPreview();
+                    updateCode();
+                }
+            });
+        });
+    }
+
+    function updateCode() {
+        if (!codeOutput) return;
+
+        if (activeTab === "tailwind") {
+            const containerClass = `grid grid-cols-1 md:grid-cols-${gridCols} gap-${gridGap / 4 > 0 ? gridGap / 4 : 0}`; // Approximate gap for tailwind standard scale
+            // Or better, use arbitrary values for gap if exact match needed: gap-[${gridGap}px]
+
+            // Let's generate nice tailwind
+            // Find closest tailwind gap
+            const twGaps = [
+                0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                14, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 72, 80,
+                96,
+            ];
+            const pxToRem = gridGap / 16;
+            // let closestGap = '4'; // default
+            // Just use arbitrary for precision tool
+            const gapClass = `gap-[${gridGap}px]`;
+
+            let code = `<div class="grid grid-cols-${gridCols} ${gapClass}">\n`;
+
+            items.forEach((item, i) => {
+                const colSpanClass =
+                    item.colSpan > 1 ? `col-span-${item.colSpan}` : "";
+                const rowSpanClass =
+                    item.rowSpan > 1 ? `row-span-${item.rowSpan}` : "";
+                const classes = [colSpanClass, rowSpanClass]
+                    .filter(Boolean)
+                    .join(" ");
+
+                code += `  <div class="${classes ? classes + " " : ""}bg-gray-100 rounded-xl p-4">\n    <!-- Item ${i + 1} content -->\n  </div>\n`;
+            });
+            code += `</div>`;
+            codeOutput.innerText = code;
+        } else {
+            // CSS
+            let code = `.bento-grid {\n  display: grid;\n  grid-template-columns: repeat(${gridCols}, 1fr);\n  gap: ${gridGap}px;\n}\n\n`;
+
+            items.forEach((item, i) => {
+                if (item.colSpan > 1 || item.rowSpan > 1) {
+                    code += `.item-${i + 1} {\n`;
+                    if (item.colSpan > 1)
+                        code += `  grid-column: span ${item.colSpan};\n`;
+                    if (item.rowSpan > 1)
+                        code += `  grid-row: span ${item.rowSpan};\n`;
+                    code += `}\n`;
+                }
+            });
+
+            codeOutput.innerText = code;
+        }
+    }
+
+    init();
+</script>
