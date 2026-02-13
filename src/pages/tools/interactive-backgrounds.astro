@@ -600,6 +600,607 @@ window.addEventListener('resize', resize);
 resize();
 animate();
 <\/script>`
+  },
+  {
+      name: 'Hexagon Pulse',
+      id: 'hexagon-pulse',
+      type: 'css',
+      description: 'A honeycomb grid that pulses with light.',
+      code: `<!-- HTML -->
+<div class="hex-grid"></div>
+
+<style>
+.hex-grid {
+  width: 100%;
+  height: 100vh;
+  background: #111;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 2px;
+}
+.hex {
+  width: 60px;
+  height: 60px;
+  background: #1a1a1a;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transition: all 0.3s;
+  position: relative;
+}
+.hex::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: #111;
+  clip-path: inherit;
+  z-index: 1;
+}
+.hex::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: cyan;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 2;
+}
+.hex:hover::before {
+  opacity: 0.8;
+  box-shadow: 0 0 15px cyan;
+}
+.hex.active::before {
+    opacity: 0.6;
+}
+</style>
+
+<script>
+const grid = document.querySelector('.hex-grid');
+const count = Math.ceil(window.innerWidth * window.innerHeight / 3000) * 1.5;
+
+for(let i=0; i<count; i++) {
+  const hex = document.createElement('div');
+  hex.className = 'hex';
+  grid.appendChild(hex);
+}
+
+const hexes = document.querySelectorAll('.hex');
+grid.addEventListener('mousemove', (e) => {
+    hexes.forEach(hex => {
+        const rect = hex.getBoundingClientRect();
+        const x = e.clientX - (rect.left + rect.width/2);
+        const y = e.clientY - (rect.top + rect.height/2);
+        const dist = Math.sqrt(x*x + y*y);
+        
+        if (dist < 150) {
+            hex.classList.add('active');
+            hex.style.transform = \`scale(\${1 - dist/300})\`;
+        } else {
+            hex.classList.remove('active');
+            hex.style.transform = 'scale(1)';
+        }
+    });
+});
+<\/script>`
+  },
+  {
+    name: 'Vortex Particles',
+    id: 'vortex-particles',
+    type: 'canvas',
+    description: 'Particles swirling into a central vortex.',
+    code: `<!-- HTML -->
+<canvas id="vortex-canvas"></canvas>
+
+<style>
+#vortex-canvas {
+  background: #000;
+  width: 100%;
+  height: 100vh;
+}
+</style>
+
+<script>
+const canvas = document.getElementById('vortex-canvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+const particles = [];
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.angle = Math.atan2(this.y - h/2, this.x - w/2);
+    this.dist = Math.sqrt(Math.pow(this.x - w/2, 2) + Math.pow(this.y - h/2, 2));
+    this.size = Math.random() * 2;
+    this.speed = Math.random() * 0.05 + 0.01;
+  }
+  update() {
+    this.angle += this.speed;
+    this.dist -= 1;
+    if(this.dist < 0) this.reset();
+    
+    this.x = w/2 + Math.cos(this.angle) * this.dist;
+    this.y = h/2 + Math.sin(this.angle) * this.dist;
+  }
+  draw() {
+    ctx.fillStyle = \`rgba(100, 200, 255, \${this.dist / 300})\`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+for(let i=0; i<300; i++) particles.push(new Particle());
+
+function animate() {
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
+  ctx.fillRect(0,0,w,h);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Retro Synthwave Grid',
+      id: 'retro-grid',
+      type: 'css',
+      description: 'Moving 3D grid inspired by 80s synthwave.',
+      code: `<!-- HTML -->
+<div class="retro-scene">
+  <div class="retro-grid-ground"></div>
+  <div class="retro-sun"></div>
+</div>
+
+<style>
+.retro-scene {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(#100020, #200040);
+  overflow: hidden;
+  position: relative;
+  perspective: 1000px;
+}
+.retro-sun {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(#ffcc00, #ff0055);
+  border-radius: 50%;
+  box-shadow: 0 0 40px #ff0055;
+}
+.retro-grid-ground {
+  position: absolute;
+  bottom: -50%;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: 
+    linear-gradient(rgba(255,0,255,0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,0,255,0.4) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: rotateX(60deg);
+  animation: gridMove 2s linear infinite;
+  box-shadow: 0 0 50px rgba(255,0,255,0.5);
+}
+@keyframes gridMove {
+  0% { transform: rotateX(60deg) translateY(0); }
+  100% { transform: rotateX(60deg) translateY(40px); }
+}
+</style>`
+  },
+  {
+      name: 'Elastic Strings',
+      id: 'elastic-strings',
+      type: 'canvas',
+      description: 'Interact with strings that bounce back.',
+      code: `<!-- HTML -->
+<canvas id="strings-canvas"></canvas>
+
+<style>
+#strings-canvas { margin: 0; padding: 0; background: #222; width: 100%; height: 100vh; }
+</style>
+
+<script>
+const canvas = document.getElementById('strings-canvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+let strings = [];
+let mouse = {x: -100, y: -100};
+
+function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    initStrings();
+}
+
+function initStrings(){
+    strings = [];
+    for(let i=50; i<h; i+=50){
+        strings.push({y: i, targetY: i, vel: 0});
+    }
+}
+
+canvas.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+function animate(){
+    ctx.clearRect(0,0,w,h);
+    
+    // Draw strings
+    ctx.beginPath();
+    strings.forEach(s => {
+        // Physics
+        const dist = Math.abs(mouse.y - s.y);
+        if(dist < 50 && Math.abs(mouse.x - w/2) < w) {
+            // Simple pull effect
+            if(mouse.y > s.y) s.vel += 1;
+            else s.vel -= 1;
+        }
+        
+        // Spring back
+        const force = (s.targetY - s.y) * 0.1;
+        s.vel += force;
+        s.vel *= 0.9; // damping
+        s.y += s.vel;
+        
+        ctx.moveTo(0, s.y);
+        // Bezier curve for smooth bend? complicated, let's just do line
+        ctx.lineTo(w, s.y);
+    });
+    ctx.strokeStyle = '#00ffcc';
+    ctx.stroke();
+    
+    requestAnimationFrame(animate);
+}
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Matrix Rain',
+      id: 'matrix-rain',
+      type: 'canvas',
+      description: 'Classic falling code rain effect.',
+      code: `<!-- HTML -->
+<canvas id="matrix-canvas"></canvas>
+
+<style>
+#matrix-canvas { display: block; background: #000; width: 100%; height: 100vh; }
+</style>
+
+<script>
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
+
+const cols = Math.floor(w / 20) + 1;
+const ypos = Array(cols).fill(0);
+
+ctx.fillStyle = '#000';
+ctx.fillRect(0, 0, w, h);
+
+function matrix () {
+  ctx.fillStyle = '#0001';
+  ctx.fillRect(0, 0, w, h);
+  
+  ctx.fillStyle = '#0f0';
+  ctx.font = '15pt monospace';
+  
+  ypos.forEach((y, ind) => {
+    const text = String.fromCharCode(Math.random() * 128);
+    const x = ind * 20;
+    ctx.fillText(text, x, y);
+    if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
+    else ypos[ind] = y + 20;
+  });
+}
+
+setInterval(matrix, 50);
+window.addEventListener('resize', () => { 
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+});
+<\/script>`
+  },
+  {
+      name: 'Floating Bubbles',
+      id: 'floating-bubbles',
+      type: 'canvas',
+      description: 'Gentle bubbles that float up.',
+      code: `<!-- HTML -->
+<canvas id="bubble-canvas"></canvas>
+
+<style>
+#bubble-canvas { background: linear-gradient(#002, #005); width: 100%; height: 100vh; }
+</style>
+
+<script>
+const canvas = document.getElementById('bubble-canvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+let bubbles = [];
+
+function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+
+class Bubble {
+    constructor(){
+        this.reset();
+        this.y = Math.random() * h; // Start seemingly anywhere
+    }
+    reset(){
+        this.x = Math.random() * w;
+        this.y = h + 10;
+        this.size = Math.random() * 10 + 5;
+        this.speed = Math.random() * 2 + 0.5;
+        this.wobble = Math.random() * Math.PI * 2;
+    }
+    update(){
+        this.y -= this.speed;
+        this.wobble += 0.05;
+        this.x += Math.sin(this.wobble) * 0.5;
+        if(this.y < -20) this.reset();
+    }
+    draw(){
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+    }
+}
+
+for(let i=0; i<50; i++) bubbles.push(new Bubble());
+
+function animate(){
+    ctx.clearRect(0,0,w,h);
+    bubbles.forEach(b => { b.update(); b.draw(); });
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Digital Glitch',
+      id: 'digital-glitch',
+      type: 'css',
+      description: 'Slices of image glitching.',
+      code: `<!-- HTML -->
+<div class="glitch-container">
+  <div class="glitch-text" data-text="ERROR">ERROR</div>
+</div>
+
+<style>
+.glitch-container {
+    width: 100%; height: 100vh; background: #050505;
+    display: flex; justify-content: center; align-items: center;
+    color: white; overflow: hidden;
+}
+.glitch-text {
+    font-size: 8rem; font-weight: bold; position: relative;
+    font-family: monospace; letter-spacing: 5px;
+}
+.glitch-text::before, .glitch-text::after {
+    content: attr(data-text);
+    position: absolute; top:0; left:0; width: 100%; height: 100%;
+}
+.glitch-text::before {
+    left: 2px; text-shadow: -1px 0 red; clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+    left: -2px; text-shadow: -1px 0 blue; clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+@keyframes glitch-anim-1 {
+  0% { clip: rect(20px, 9999px, 80px, 0); }
+  20% { clip: rect(90px, 9999px, 10px, 0); }
+  40% { clip: rect(10px, 9999px, 140px, 0); }
+  60% { clip: rect(55px, 9999px, 20px, 0); }
+  80% { clip: rect(80px, 9999px, 80px, 0); }
+  100% { clip: rect(30px, 9999px, 90px, 0); }
+}
+@keyframes glitch-anim-2 {
+  0% { clip: rect(90px, 9999px, 10px, 0); }
+  20% { clip: rect(20px, 9999px, 80px, 0); }
+  40% { clip: rect(140px, 9999px, 50px, 0); }
+  60% { clip: rect(35px, 9999px, 140px, 0); }
+  80% { clip: rect(85px, 9999px, 20px, 0); }
+  100% { clip: rect(10px, 9999px, 80px, 0); }
+}
+</style>`
+  },
+  {
+      name: 'Iso-lines',
+      id: 'iso-lines',
+      type: 'canvas',
+      description: 'Abstract topographic lines.',
+      code: `<!-- HTML -->
+<canvas id="iso-canvas"></canvas>
+
+<style>
+#iso-canvas { width: 100%; height: 100vh; background: #fff; filter: invert(1); }
+</style>
+
+<script>
+const canvas = document.getElementById('iso-canvas');
+const ctx = canvas.getContext('2d');
+let w, h, time = 0;
+
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+
+function noise(x,y) { return Math.sin(x) * Math.cos(y); } // Simple pseudo noise
+
+function animate(){
+    ctx.clearRect(0,0,w,h);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#000';
+    time += 0.005;
+    
+    for(let i=0; i<h; i+=20) {
+        ctx.beginPath();
+        for(let j=0; j<w; j+=20) {
+            const val = noise(j*0.01 + time, i*0.01 + time) * 50;
+            if(j===0) ctx.moveTo(j, i+val);
+            else ctx.lineTo(j, i+val);
+        }
+        ctx.stroke();
+    }
+    requestAnimationFrame(animate);
+}
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Interactive Snowfall',
+      id: 'snowfall',
+      type: 'canvas',
+      description: 'Snow flakes affected by mouse wind.',
+      code: `<!-- HTML -->
+<canvas id="snow-canvas"></canvas>
+
+<style>
+#snow-canvas { background: #0a0a2a; width: 100%; height: 100vh; }
+</style>
+
+<script>
+const canvas = document.getElementById('snow-canvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+const flakes = [];
+
+class Flake {
+    constructor(){ this.reset(); }
+    reset(){
+        this.x = Math.random() * w;
+        this.y = Math.random() * -h;
+        this.vx = Math.random() - 0.5;
+        this.vy = Math.random() * 2 + 1;
+        this.size = Math.random() * 3 + 1;
+    }
+    update(wind){
+        this.x += this.vx + wind;
+        this.y += this.vy;
+        if(this.y > h) this.reset();
+        if(this.x > w) this.x = 0;
+        if(this.x < 0) this.x = w;
+    }
+    draw(){
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fill();
+    }
+}
+function resize(){ 
+    w=canvas.width=window.innerWidth; 
+    h=canvas.height=window.innerHeight;
+    flakes.length = 0;
+    for(let i=0; i<200; i++) flakes.push(new Flake());
+}
+
+let mouseX = 0;
+let lastMouseX = 0;
+let wind = 0;
+
+window.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    wind = (mouseX - lastMouseX) * 0.05;
+    lastMouseX = mouseX;
+});
+
+function animate(){
+    ctx.clearRect(0,0,w,h);
+    wind *= 0.95; // Decay wind
+    flakes.forEach(f => { f.update(wind); f.draw(); });
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Laser Beam',
+      id: 'laser-beam',
+      type: 'canvas',
+      description: 'High energy beam following the cursor.',
+      code: `<!-- HTML -->
+<canvas id="laser-canvas"></canvas>
+
+<style>
+#laser-canvas { background: #000; width: 100%; height: 100vh; }
+</style>
+
+<script>
+const canvas = document.getElementById('laser-canvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+
+let mouse = {x: 0, y: 0};
+window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
+
+function animate(){
+    ctx.fillStyle = 'rgba(0,0,0,0.2)'; // trailing effect
+    ctx.fillRect(0,0,w,h);
+    
+    // Draw Beam from center
+    ctx.beginPath();
+    ctx.moveTo(w/2, h/2);
+    ctx.lineTo(mouse.x, mouse.y);
+    ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    
+    // Glow
+    ctx.strokeStyle = 'rgba(255, 100, 100, 0.4)';
+    ctx.lineWidth = 15;
+    ctx.stroke();
+    
+    // Spark at mouse
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(mouse.x, mouse.y, Math.random()*5+5, 0, Math.PI*2);
+    ctx.fill();
+    
+    requestAnimationFrame(animate);
+}
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
   }
 ];
 ---
@@ -813,13 +1414,77 @@ animate();
     backface-visibility: hidden;
   }
   
-  /* 6. Magnetic */
   .magnetic-dot {
       transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
   }
+
+  .hexagon-pulse-preview {
+    background: #111;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    padding: 2px;
+  }
+  .hexagon-pulse-preview div {
+    width: 20px;
+    height: 20px;
+    background: #222;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .vortex-particles-preview {
+    background: radial-gradient(circle at center, #003, #000);
+  }
+
+  .retro-grid-preview {
+    background: linear-gradient(#200040, #000);
+    background-image: linear-gradient(rgba(255,0,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,255,0.2) 1px, transparent 1px);
+    background-size: 10px 10px;
+  }
+
+  .elastic-strings-preview {
+    background: #111;
+    background-image: repeating-linear-gradient(transparent, transparent 9px, #00ffcc 10px);
+  }
+
+  .matrix-rain-preview {
+    background: #000;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 10px;
+    overflow: hidden;
+  }
+
+  .floating-bubbles-preview {
+    background: linear-gradient(#002, #005);
+  }
+
+  .digital-glitch-preview {
+    background: #050505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: monospace;
+    font-weight: bold;
+  }
+
+  .iso-lines-preview {
+    background: #000;
+    background-image: repeating-linear-gradient(45deg, #111, #111 2px, transparent 2px, transparent 10px);
+  }
+
+  .snowfall-preview {
+    background: #0a0a2a;
+  }
+
+  .laser-beam-preview {
+    background: #000;
+    background-image: radial-gradient(circle at center, #f00 1px, transparent 5px);
+  }
 </style>
 
-<script is:inline set:html={`window.backgroundsData = ${JSON.stringify(backgrounds).replace(/<\/script>/g, '<\\/script>')};`}></script>
+<script is:inline set:html={'window.backgroundsData = ' + JSON.stringify(backgrounds).replace(/<\/script>/g, '<\\/script>').replace(/'/g, "\\'") + ';'}></script>
 
 <script>
   const backgroundsData = window.backgroundsData;
@@ -994,6 +1659,16 @@ animate();
           case 'pixel-trail': initPixelTrail(); break;
           case '3d-tilt': init3DTilt(); break;
           case 'neon-waves': initNeonWaves(); break;
+          case 'hexagon-pulse': initHexagonPulse(); break;
+          case 'vortex-particles': initVortexParticles(); break;
+          case 'retro-grid': initRetroGrid(); break;
+          case 'elastic-strings': initElasticStrings(); break;
+          case 'matrix-rain': initMatrixRain(); break;
+          case 'floating-bubbles': initFloatingBubbles(); break;
+          case 'digital-glitch': initDigitalGlitch(); break;
+          case 'iso-lines': initIsoLines(); break;
+          case 'snowfall': initSnowfall(); break;
+          case 'laser-beam': initLaserBeam(); break;
       }
   }
 
@@ -1423,8 +2098,10 @@ animate();
   }
 
   function initNeonWaves() {
-      if(canvasLayer) canvasLayer.classList.remove('opacity-0');
-      const ctx = canvasLayer.getContext('2d');
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
       if(!ctx) return;
       
       let width = mainPreview.clientWidth;
@@ -1476,6 +2153,471 @@ animate();
       }
       animate();
       
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function initHexagonPulse() {
+      if(cssLayer) {
+          cssLayer.style.background = '#111';
+          const grid = document.createElement('div');
+          grid.className = 'w-full h-full flex flex-wrap justify-center align-content-center gap-0.5 overflow-hidden';
+          cssLayer.appendChild(grid);
+
+          const count = Math.ceil(window.innerWidth * window.innerHeight / 3000) * 1.5;
+          for(let i=0; i<count; i++) {
+              const hex = document.createElement('div');
+              hex.className = 'w-[60px] h-[60px] bg-[#1a1a1a] relative transition-all duration-300';
+              hex.style.clipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
+              
+              const inner = document.createElement('div');
+              inner.className = 'absolute inset-[2px] bg-[#111] z-10';
+              inner.style.clipPath = 'inherit';
+              
+              const pulse = document.createElement('div');
+              pulse.className = 'absolute inset-0 bg-cyan-400 opacity-0 transition-opacity duration-500 z-20';
+              
+              hex.appendChild(inner);
+              hex.appendChild(pulse);
+              grid.appendChild(hex);
+          }
+
+          const pulses = grid.querySelectorAll('div > div:last-child');
+          const onMove = (e) => {
+          pulses.forEach((pulseEl) => {
+              const pulse = pulseEl as HTMLElement;
+              const hex = pulse.parentElement as HTMLElement;
+              if(!hex) return;
+              
+              const rect = hex.getBoundingClientRect();
+              const x = (e as MouseEvent).clientX - (rect.left + rect.width/2);
+              const y = (e as MouseEvent).clientY - (rect.top + rect.height/2);
+              const dist = Math.sqrt(x*x + y*y);
+              
+              if (dist < 150) {
+                  pulse.style.opacity = (0.8 * (1 - dist/150)).toString();
+                  hex.style.transform = `scale(${1 + (1 - dist/150) * 0.1})`;
+              } else {
+                  pulse.style.opacity = '0';
+                  hex.style.transform = 'scale(1)';
+              }
+          });
+          };
+          mainPreview.addEventListener('mousemove', onMove);
+          cleanupFunc = () => mainPreview.removeEventListener('mousemove', onMove);
+      }
+  }
+
+  function initVortexParticles() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      const particles: any[] = [];
+      const count = 300;
+      
+      class Particle {
+          x: number; y: number; angle: number; dist: number; size: number; speed: number;
+          constructor() { this.reset(); }
+          reset() {
+              this.x = Math.random() * w;
+              this.y = Math.random() * h;
+              this.angle = Math.atan2(this.y - h/2, this.x - w/2);
+              this.dist = Math.sqrt(Math.pow(this.x - w/2, 2) + Math.pow(this.y - h/2, 2));
+              this.size = Math.random() * 2;
+              this.speed = Math.random() * 0.05 + 0.01;
+          }
+          update() {
+              this.angle += this.speed;
+              this.dist -= 1;
+              if(this.dist < 0) this.reset();
+              this.x = w/2 + Math.cos(this.angle) * this.dist;
+              this.y = h/2 + Math.sin(this.angle) * this.dist;
+          }
+          draw() {
+              ctx.fillStyle = `rgba(100, 200, 255, ${this.dist / 300})`;
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+              ctx.fill();
+          }
+      }
+
+      for(let i=0; i<count; i++) particles.push(new Particle());
+
+      let animationId;
+      function animate() {
+          ctx.fillStyle = 'rgba(0,0,0,0.1)';
+          ctx.fillRect(0,0,w,h);
+          particles.forEach(p => { p.update(); p.draw(); });
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      
+      cleanupFunc = () => {
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function initRetroGrid() {
+      if(cssLayer) {
+          cssLayer.style.background = 'linear-gradient(#100020, #200040)';
+          cssLayer.style.perspective = '1000px';
+          
+          const sun = document.createElement('div');
+          sun.className = 'absolute top-[10%] left-1/2 -translate-x-1/2 w-48 h-48 bg-gradient-to-b from-yellow-400 to-pink-600 rounded-full shadow-[0_0_40px_#ff0055]';
+          
+          const grid = document.createElement('div');
+          grid.className = 'absolute bottom-[-50%] left-[-50%] w-[200%] h-full opacity-40';
+          grid.style.backgroundImage = 'linear-gradient(rgba(255,0,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,255,0.4) 1px, transparent 1px)';
+          grid.style.backgroundSize = '40px 40px';
+          grid.style.transform = 'rotateX(60deg)';
+          grid.style.boxShadow = '0 0 50px rgba(255,0,255,0.5)';
+          
+          cssLayer.appendChild(sun);
+          cssLayer.appendChild(grid);
+          
+          let offset = 0;
+          let animationId;
+          function animate() {
+              offset = (offset + 1) % 40;
+              grid.style.backgroundPosition = `0 ${offset}px`;
+              animationId = requestAnimationFrame(animate);
+          }
+          animate();
+          cleanupFunc = () => cancelAnimationFrame(animationId);
+      }
+  }
+
+  function initElasticStrings() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      const strings = [];
+      const count = 15;
+      for(let i=0; i<count; i++) {
+          strings.push({ y: (h / (count + 1)) * (i + 1), targetY: (h / (count + 1)) * (i + 1), vel: 0 });
+      }
+
+      let mouse = { x: -100, y: -100 };
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          mouse.x = e.clientX - rect.left;
+          mouse.y = e.clientY - rect.top;
+      };
+      mainPreview.addEventListener('mousemove', onMove);
+
+      let animationId;
+      function animate() {
+          ctx.clearRect(0,0,w,h);
+          ctx.beginPath();
+          ctx.strokeStyle = '#00ffcc';
+          ctx.lineWidth = 1;
+          
+          strings.forEach(s => {
+              const dist = Math.abs(mouse.y - s.y);
+              if(dist < 50) {
+                  const pull = (50 - dist) * (mouse.y > s.y ? 1 : -1) * 0.1;
+                  s.vel += pull;
+              }
+              const spring = (s.targetY - s.y) * 0.1;
+              s.vel += spring;
+              s.vel *= 0.9;
+              s.y += s.vel;
+              
+              ctx.moveTo(0, s.y);
+              ctx.lineTo(w, s.y);
+          });
+          ctx.stroke();
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function initMatrixRain() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      const cols = Math.floor(w / 20) + 1;
+      const ypos = Array(cols).fill(0);
+
+      let animationId;
+      function step() {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = '#0f0';
+          ctx.font = '15pt monospace';
+          
+          ypos.forEach((y, ind) => {
+              const text = String.fromCharCode(Math.random() * 128);
+              const x = ind * 20;
+              ctx.fillText(text, x, y);
+              if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
+              else ypos[ind] = y + 20;
+          });
+          animationId = requestAnimationFrame(step);
+      }
+      step();
+      cleanupFunc = () => cancelAnimationFrame(animationId);
+  }
+
+  function initFloatingBubbles() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      const bubbles: any[] = [];
+      class Bubble {
+          x: number; y: number; size: number; speed: number; wobble: number;
+          constructor() { this.reset(); this.y = Math.random() * h; }
+          reset() {
+              this.x = Math.random() * w;
+              this.y = h + 20;
+              this.size = Math.random() * 10 + 5;
+              this.speed = Math.random() * 1 + 0.5;
+              this.wobble = Math.random() * Math.PI * 2;
+          }
+          update() {
+              this.y -= this.speed;
+              this.wobble += 0.05;
+              this.x += Math.sin(this.wobble) * 0.5;
+              if (this.y < -20) this.reset();
+          }
+          draw() {
+              ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+              ctx.fillStyle = 'rgba(255,255,255,0.1)';
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+              ctx.fill();
+              ctx.stroke();
+          }
+      }
+      for(let i=0; i<50; i++) bubbles.push(new Bubble());
+
+      let animationId;
+      function animate() {
+          ctx.clearRect(0,0,w,h);
+          bubbles.forEach(b => { b.update(); b.draw(); });
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      cleanupFunc = () => cancelAnimationFrame(animationId);
+  }
+
+  function initDigitalGlitch() {
+      if(cssLayer) {
+          cssLayer.style.background = '#050505';
+          const container = document.createElement('div');
+          container.className = 'w-full h-full flex items-center justify-center';
+          
+          const text = document.createElement('div');
+          text.className = 'text-7xl font-mono font-bold text-white relative tracking-[10px]';
+          text.innerText = 'GLITCH';
+          text.setAttribute('data-glitch', 'GLITCH');
+          
+          // Add custom style for glitch animation if not exists
+          if(!document.getElementById('glitch-style')) {
+              const style = document.createElement('style');
+              style.id = 'glitch-style';
+              style.innerHTML = `
+                  [data-glitch]::before, [data-glitch]::after {
+                      content: attr(data-glitch);
+                      position: absolute; top:0; left:0; width: 100%; height: 100%; background: #050505;
+                  }
+                  [data-glitch]::before {
+                      left: 2px; text-shadow: -2px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0);
+                      animation: glitch-anim 5s infinite linear alternate-reverse;
+                  }
+                  [data-glitch]::after {
+                      left: -2px; text-shadow: -2px 0 #00fff9; clip: rect(44px, 450px, 56px, 0);
+                      animation: glitch-anim2 5s infinite linear alternate-reverse;
+                  }
+                  @keyframes glitch-anim {
+                      0% { clip: rect(31px, 9999px, 94px, 0); }
+                      20% { clip: rect(62px, 9999px, 42px, 0); }
+                      40% { clip: rect(16px, 9999px, 78px, 0); }
+                      60% { clip: rect(81px, 9999px, 13px, 0); }
+                      80% { clip: rect(92px, 9999px, 35px, 0); }
+                      100% { clip: rect(13px, 9999px, 86px, 0); }
+                  }
+                  @keyframes glitch-anim2 {
+                      0% { clip: rect(67px, 9999px, 24px, 0); }
+                      20% { clip: rect(12px, 9999px, 87px, 0); }
+                      40% { clip: rect(94px, 9999px, 12px, 0); }
+                      60% { clip: rect(31px, 9999px, 63px, 0); }
+                      80% { clip: rect(12px, 9999px, 95px, 0); }
+                      100% { clip: rect(82px, 9999px, 12px, 0); }
+                  }
+              `;
+              document.head.appendChild(style);
+          }
+          
+          container.appendChild(text);
+          cssLayer.appendChild(container);
+          cleanupFunc = () => {};
+      }
+  }
+
+  function initIsoLines() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      let time = 0;
+      let animationId;
+      function animate() {
+          ctx.fillStyle = '#000';
+          ctx.fillRect(0,0,w,h);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = '#333';
+          time += 0.005;
+          
+          for(let i=0; i<h; i+=25) {
+              ctx.beginPath();
+              for(let j=0; j<w; j+=25) {
+                  const val = Math.sin(j*0.01 + time) * Math.cos(i*0.01 + time) * 40;
+                  if(j===0) ctx.moveTo(j, i+val);
+                  else ctx.lineTo(j, i+val);
+              }
+              ctx.stroke();
+          }
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      cleanupFunc = () => cancelAnimationFrame(animationId);
+  }
+
+  function initSnowfall() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      const flakes: any[] = [];
+      class Flake {
+          x: number; y: number; vx: number; vy: number; size: number;
+          constructor() { this.reset(); this.y = Math.random() * h; }
+          reset() {
+              this.x = Math.random() * w;
+              this.y = -10;
+              this.vx = Math.random() - 0.5;
+              this.vy = Math.random() * 1 + 1;
+              this.size = Math.random() * 2 + 1;
+          }
+          update(wind: number) {
+              this.x += this.vx + wind;
+              this.y += this.vy;
+              if (this.y > h) this.reset();
+              if (this.x > w) this.x = 0;
+              if (this.x < 0) this.x = w;
+          }
+          draw() {
+              ctx.fillStyle = 'rgba(255,255,255,0.7)';
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+              ctx.fill();
+          }
+      }
+      for(let i=0; i<150; i++) flakes.push(new Flake());
+
+      let lastX = 0, wind = 0;
+      const onMove = (e) => {
+          wind = (e.clientX - lastX) * 0.05;
+          lastX = e.clientX;
+      };
+      mainPreview.addEventListener('mousemove', onMove);
+
+      let animationId;
+      function animate() {
+          ctx.clearRect(0,0,w,h);
+          wind *= 0.95;
+          flakes.forEach(f => { f.update(wind); f.draw(); });
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function initLaserBeam() {
+      if(!canvasLayer || !mainPreview) return;
+      canvasLayer.classList.remove('opacity-0');
+      const canvas = canvasLayer as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d');
+      if(!ctx) return;
+      
+      let w = canvasLayer.width = mainPreview.clientWidth;
+      let h = canvasLayer.height = mainPreview.clientHeight;
+      
+      let mouse = { x: w/2, y: h/2 };
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          mouse.x = e.clientX - rect.left;
+          mouse.y = e.clientY - rect.top;
+      };
+      mainPreview.addEventListener('mousemove', onMove);
+
+      let animationId;
+      function animate() {
+          ctx.fillStyle = 'rgba(0,0,0,0.2)';
+          ctx.fillRect(0,0,w,h);
+          
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = '#ff0000';
+          ctx.strokeStyle = '#ff0000';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(w/2, h/2);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+          
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(mouse.x, mouse.y, 4, 0, Math.PI*2);
+          ctx.fill();
+          
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
       cleanupFunc = () => {
           mainPreview.removeEventListener('mousemove', onMove);
           cancelAnimationFrame(animationId);
