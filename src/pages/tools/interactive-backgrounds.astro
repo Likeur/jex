@@ -1,0 +1,1495 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const backgrounds = [
+  {
+    name: 'Mouse Gradient',
+    id: 'mouse-gradient',
+    type: 'css',
+    description: 'A soft gradient that follows your mouse cursor.',
+    code: `<!-- HTML -->
+<div class="interactive-bg"></div>
+
+<style>
+.interactive-bg {
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+.interactive-bg::before {
+  content: '';
+  position: absolute;
+  top: var(--y, 50%);
+  left: var(--x, 50%);
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(100,100,255,0.3) 0%, transparent 70%);
+  opacity: 1;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+</style>
+
+<script>
+const bg = document.querySelector('.interactive-bg');
+bg.addEventListener('mousemove', (e) => {
+  const rect = bg.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  bg.style.setProperty('--x', \`\${x}px\`);
+  bg.style.setProperty('--y', \`\${y}px\`);
+});
+<\/script>`
+  },
+  {
+    name: 'Spotlight Reveal',
+    id: 'spotlight',
+    type: 'css',
+    description: 'A spotlight that reveals the background pattern underneath.',
+    code: `<!-- HTML -->
+<div class="spotlight-bg"></div>
+
+<style>
+.spotlight-bg {
+  width: 100%;
+  height: 100vh;
+  background-color: #000;
+  background-image: radial-gradient(#333 1px, transparent 1px);
+  background-size: 30px 30px;
+  position: relative;
+}
+.spotlight-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: black;
+  mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0%, black 150px);
+  -webkit-mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0%, black 150px);
+  pointer-events: none;
+}
+</style>
+
+<script>
+const bg = document.querySelector('.spotlight-bg');
+bg.addEventListener('mousemove', (e) => {
+  const rect = bg.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  bg.style.setProperty('--x', \`\${x}px\`);
+  bg.style.setProperty('--y', \`\${y}px\`);
+});
+<\/script>`
+  },
+  {
+    name: 'Constellation',
+    id: 'constellation',
+    type: 'canvas',
+    description: 'Particles triggering connections when close to the mouse.',
+    code: `<!-- HTML -->
+<canvas id="constellation"></canvas>
+
+<style>
+#constellation {
+  background: #000;
+  width: 100%;
+  height: 100vh;
+  display: block;
+}
+</style>
+
+<script>
+const canvas = document.getElementById('constellation');
+const ctx = canvas.getContext('2d');
+let width, height;
+let particles = [];
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  initParticles();
+}
+
+function initParticles() {
+  particles = [];
+  for(let i=0; i<60; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 2 + 1
+    });
+  }
+}
+
+let mouse = { x: -1000, y: -1000 };
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+function animate() {
+  ctx.clearRect(0,0,width,height);
+  ctx.fillStyle = '#fff';
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    if(p.x < 0 || p.x > width) p.vx *= -1;
+    if(p.y < 0 || p.y > height) p.vy *= -1;
+    
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    ctx.fill();
+    
+    const dx = p.x - mouse.x;
+    const dy = p.y - mouse.y;
+    if(Math.sqrt(dx*dx + dy*dy) < 150) {
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(mouse.x, mouse.y);
+      ctx.stroke();
+    }
+  });
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Grid Ripple',
+      id: 'grid-ripple',
+      type: 'canvas',
+      description: 'A grid that distorts and ripples around the cursor.',
+      code: `<!-- HTML -->
+<canvas id="grid-ripple"></canvas>
+
+<style>
+#grid-ripple {
+  background: #000;
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<script>
+const canvas = document.getElementById('grid-ripple');
+const ctx = canvas.getContext('2d');
+let width, height;
+let points = [];
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  initGrid();
+}
+
+function initGrid() {
+  points = [];
+  const cols = 25;
+  const rows = 15;
+  for(let i=0; i<=cols; i++) {
+    for(let j=0; j<=rows; j++) {
+      const x = (i/cols)*width;
+      const y = (j/rows)*height;
+      points.push({x, y, ox:x, oy:y});
+    }
+  }
+}
+
+let mouse = { x: -1000, y: -1000 };
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+function animate() {
+  ctx.clearRect(0,0,width,height);
+  ctx.fillStyle = '#448aff';
+  
+  points.forEach(p => {
+    const dx = p.ox - mouse.x;
+    const dy = p.oy - mouse.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const maxDist = 150;
+    
+    if(dist < maxDist) {
+      const angle = Math.atan2(dy, dx);
+      const force = (maxDist - dist) / maxDist;
+      const push = force * 40;
+      p.x = p.ox + Math.cos(angle) * push;
+      p.y = p.oy + Math.sin(angle) * push;
+    } else {
+      p.x += (p.ox - p.x) * 0.1;
+      p.y += (p.oy - p.y) * 0.1;
+    }
+    
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: 'Parallax Stars',
+      id: 'parallax',
+      type: 'js',
+      description: 'Multiple layers of stars moving in opposition to the mouse.',
+      code: `<!-- HTML -->
+<div class="parallax-container">
+  <div class="layer layer-1"></div>
+  <div class="layer layer-2"></div>
+  <div class="layer layer-3"></div>
+</div>
+
+<style>
+.parallax-container { 
+  width: 100%;
+  height: 100vh;
+  overflow: hidden; 
+  position: relative; 
+  background: #0b0b1a; 
+}
+.layer { 
+  position: absolute; 
+  inset: -100px; 
+  background-image: radial-gradient(white 1px, transparent 1px); 
+  transition: transform 0.1s linear; 
+}
+.layer-1 { background-size: 50px 50px; opacity: 0.5; }
+.layer-2 { background-size: 100px 100px; opacity: 0.7; }
+.layer-3 { background-size: 200px 200px; opacity: 0.9; }
+</style>
+
+<script>
+document.addEventListener('mousemove', (e) => {
+    const x = (window.innerWidth - e.pageX * 2) / 100;
+    const y = (window.innerHeight - e.pageY * 2) / 100;
+    
+    document.querySelector('.layer-1').style.transform = \`translate(\${x}px, \${y}px)\`;
+    document.querySelector('.layer-2').style.transform = \`translate(\${x*2}px, \${y*2}px)\`;
+    document.querySelector('.layer-3').style.transform = \`translate(\${x*3}px, \${y*3}px)\`;
+});
+<\/script>`
+  },
+  {
+      name: 'Magnetic Repulsion',
+      id: 'magnetic',
+      type: 'js',
+      description: 'Elements that flee from the cursor nearby.',
+      code: `<!-- HTML -->
+<div id="magnetic-grid"></div>
+
+<style>
+#magnetic-grid {
+  width: 100%;
+  height: 100vh;
+  background: #111;
+  display: grid;
+  grid-template-columns: repeat(40, 0.5fr);
+  grid-template-rows: repeat(20, 0.5fr);
+  overflow: hidden;
+}
+.magnetic-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.magnetic-dot {
+  width: 2px; 
+  height: 2px; 
+  background: white; 
+  border-radius: 50%;
+  opacity: 0.3;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+}
+</style>
+
+<script>
+const grid = document.getElementById('magnetic-grid');
+const dots = [];
+
+// Create grid
+for(let i=0; i<800; i++) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'magnetic-wrapper';
+  const dot = document.createElement('div');
+  dot.className = 'magnetic-dot';
+  wrapper.appendChild(dot);
+  grid.appendChild(wrapper);
+  dots.push(dot);
+}
+
+document.addEventListener('mousemove', (e) => {
+  const rect = grid.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  
+  dots.forEach(dot => {
+      const dotRect = dot.getBoundingClientRect();
+      // Calculate dot center relative to grid
+      const dotX = (dotRect.left + dotRect.width/2) - rect.left;
+      const dotY = (dotRect.top + dotRect.height/2) - rect.top;
+      
+      const dx = dotX - mx;
+      const dy = dotY - my;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      
+      if(dist < 150) {
+          const strength = (150 - dist) / 150;
+          const tx = dx * strength * 0.8;
+          const ty = dy * strength * 0.8;
+          dot.style.transform = \`translate(\${tx}px, \${ty}px)\`;
+          dot.style.opacity = '1';
+      } else {
+          dot.style.transform = 'translate(0,0)';
+          dot.style.opacity = '0.3';
+      }
+  });
+});
+<\/script>`
+  },
+  {
+      name: 'Glow Board',
+      id: 'glow-board',
+      type: 'css',
+      description: 'Grid items that light up when hovered.',
+      code: `<!-- HTML -->
+<div id="glow-container"></div>
+
+<style>
+#glow-container {
+  background: #222;
+  padding: 1px;
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+}
+.glow-card {
+  background: #111;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.glow-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(400px circle at var(--x) var(--y), rgba(255,255,255,0.15), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+#glow-container:hover .glow-card::before {
+  opacity: 1;
+}
+</style>
+
+<script>
+const container = document.getElementById('glow-container');
+
+// Create cards nicely filling space
+const totalCards = Math.ceil(window.innerWidth / 80) * Math.ceil(window.innerHeight / 80);
+for(let i=0; i<totalCards; i++) {
+  const card = document.createElement('div');
+  card.className = 'glow-card';
+  container.appendChild(card);
+}
+
+document.querySelectorAll('.glow-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--x', \`\${x}px\`);
+    card.style.setProperty('--y', \`\${y}px\`);
+  });
+});
+<\/script>`
+  },
+  {
+      name: 'Pixel Trail',
+      id: 'pixel-trail',
+      type: 'canvas',
+      description: 'A trail of fading pixels following your movement.',
+      code: `<!-- HTML -->
+<canvas id="pixel-trail"></canvas>
+
+<style>
+#pixel-trail {
+  background: #000;
+  width: 100%;
+  height: 100vh;
+}
+</style>
+
+<script>
+const canvas = document.getElementById('pixel-trail');
+const ctx = canvas.getContext('2d');
+let width, height;
+let trail = [];
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  trail.push({
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+    age: 1.0,
+    size: Math.random() * 10 + 5,
+    color: \`hsl(\${Math.random()*360}, 100%, 50%)\`
+  });
+});
+
+function animate() {
+  ctx.clearRect(0,0,width,height);
+  
+  for(let i=trail.length-1; i>=0; i--) {
+      const p = trail[i];
+      p.age -= 0.02;
+      if(p.age <= 0) {
+          trail.splice(i, 1);
+          continue;
+      }
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.age;
+      ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  },
+  {
+      name: '3D Tilt Plane',
+      id: '3d-tilt',
+      type: 'css',
+      description: 'A 3D plane that tilts based on mouse position.',
+      code: `<!-- HTML -->
+<div class="tilt-wrapper">
+  <div class="tilt-plane"></div>
+</div>
+
+<style>
+.tilt-wrapper {
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  perspective: 1000px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tilt-plane { 
+  width: 150%; 
+  height: 150%; 
+  background-image: 
+    linear-gradient(rgba(0, 255, 100, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 100, 0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+  border: 1px solid rgba(0,255,100,0.3);
+}
+</style>
+
+<script>
+const wrapper = document.querySelector('.tilt-wrapper');
+const plane = document.querySelector('.tilt-plane');
+
+wrapper.addEventListener('mousemove', (e) => {
+    const rect = wrapper.getBoundingClientRect();
+    // Normalize mouse position -0.5 to 0.5
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    
+    // Rotate based on position
+    plane.style.transform = \`rotateY(\${x * 20}deg) rotateX(\${-y * 20}deg)\`;
+});
+<\/script>`
+  },
+  {
+      name: 'Neon Waves',
+      id: 'neon-waves',
+      type: 'canvas',
+      description: 'Sine waves that react to cursor proximity.',
+      code: `<!-- HTML -->
+<canvas id="neon-waves"></canvas>
+
+<style>
+#neon-waves {
+  background: #000;
+  width: 100%;
+  height: 100vh;
+}
+</style>
+
+<script>
+const canvas = document.getElementById('neon-waves');
+const ctx = canvas.getContext('2d');
+let width, height;
+let time = 0;
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+
+let mouse = { x: -1000, y: 0 };
+canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+});
+
+function animate() {
+    ctx.clearRect(0,0,width,height);
+    ctx.lineWidth = 2;
+    const lines = 20;
+    
+    for(let i=0; i<lines; i++) {
+        ctx.beginPath();
+        let hue = (time + i * 10) % 360;
+        ctx.strokeStyle = \`hsl(\${hue}, 70%, 50%)\`;
+        
+        for(let x=0; x<width; x+=5) {
+            const dist = Math.abs(x - mouse.x);
+            const mouseInfluence = Math.max(0, (200 - dist) / 200);
+            
+            const y = height/2 + 
+                      Math.sin(x * 0.01 + time * 0.05 + i * 0.5) * 50 +
+                      (i - lines/2) * 10 + 
+                      Math.sin(x * 0.05 + time * 0.1) * 50 * mouseInfluence;
+            
+            if(x===0) ctx.moveTo(x,y);
+            else ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+    }
+    time += 0.5;
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+<\/script>`
+  }
+];
+---
+
+<Layout title="Interactive Backgrounds | Jex" description="Backgrounds that react to your mouse movements.">
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-b from-gray-900 to-gray-500 dark:from-white dark:to-white/60 mb-3">Interactive Backgrounds</h1>
+    <p class="text-gray-600 dark:text-white/50">Backgrounds that react to your mouse movements. Move your cursor over the preview.</p>
+  </div>
+
+  <!-- Main Previewer -->
+  <div class="mb-12 relative group rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg min-h-[400px]" id="main-preview">
+    
+    <!-- Canvas Layers -->
+    <canvas id="canvas-layer" class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-300 pointer-events-none"></canvas>
+    
+    <!-- HTML/CSS Layers -->
+    <div id="css-layer" class="absolute inset-0 w-full h-full transition-opacity duration-300 overflow-hidden"></div>
+
+    <!-- Controls -->
+    <div class="absolute bottom-4 right-4 z-20 flex gap-2">
+      <button id="reset-btn" class="p-2 bg-black/50 text-white rounded-lg hover:bg-black/70 backdrop-blur-sm transition-colors border border-white/10">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+      </button>
+      <button id="fullscreen-btn" class="p-2 bg-black/50 text-white rounded-lg hover:bg-black/70 backdrop-blur-sm transition-colors border border-white/10">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Active Style Name -->
+    <div class="absolute top-4 left-4 z-20 px-3 py-1.5 bg-black/50 text-white text-sm font-medium rounded-full backdrop-blur-sm border border-white/10" id="active-style-name">
+      Select a style
+    </div>
+  </div>
+
+  <!-- Grid Selection -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {backgrounds.map((bg) => (
+      <div 
+        class="group relative bg-white dark:bg-[#111] border border-black/5 dark:border-white/10 rounded-xl overflow-hidden hover:border-black/20 dark:hover:border-white/20 transition-all shadow-sm dark:shadow-none cursor-pointer bg-card-item"
+        data-id={bg.id}
+        data-name={bg.name}
+      >
+        <div class="h-32 w-full bg-gray-100 dark:bg-black/40 flex items-center justify-center relative overflow-hidden">
+             <!-- Mini Preview -->
+             <div class={`mini-preview ${bg.id}-preview`}>
+                {bg.id === 'glow-board' && (
+                  <div class="glow-board-preview w-full h-full"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                )}
+             </div>
+        </div>
+        
+        <div class="p-4 bg-gray-50 dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5">
+           <div class="flex items-center justify-between mb-2">
+             <h3 class="font-medium text-gray-800 dark:text-white/80">{bg.name}</h3>
+             <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-white/50 capitalize">{bg.type}</span>
+           </div>
+           <p class="text-xs text-gray-500 dark:text-white/40 mb-3">{bg.description}</p>
+           
+           <button class="copy-code-btn w-full px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-white transition-colors" data-id={bg.id} data-name={bg.name}>
+             Copy Code
+           </button>
+        </div>
+      </div>
+    ))}
+  </div>
+
+
+</Layout>
+
+<style>
+  /* Base Styles */
+  #main-preview {
+    background-color: #050510;
+  }
+  
+  /* Modal Styles */
+
+  
+  /* Mini Previews */
+  .mini-preview { width: 100%; height: 100%; position: relative; overflow: hidden; }
+  
+  .mouse-gradient-preview {
+    background: radial-gradient(circle at 50% 50%, rgba(100,100,255,0.5), transparent 70%);
+  }
+  
+  .spotlight-preview {
+    background-color: #000;
+    background-image: radial-gradient(#666 1px, transparent 1px);
+    background-size: 10px 10px;
+    mask-image: radial-gradient(circle at 50% 50%, transparent 20%, black 60%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 20%, black 60%);
+  }
+  
+  .constellation-preview {
+    background: #000;
+  }
+  .constellation-preview::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.5;
+  }
+  
+  .grid-ripple-preview {
+    background: linear-gradient(#448aff 1px, transparent 1px), linear-gradient(90deg, #448aff 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: #000;
+  }
+
+  .parallax-preview {
+    background: #0b0b1a;
+    box-shadow: inset 0 0 20px #000;
+  }
+  .parallax-preview::after {
+    content: '★  .  *  .';
+    color: white; font-size: 10px; opacity: 0.5;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    white-space: pre;
+  }
+  
+  .magnetic-preview {
+    background: #111;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 10px;
+  }
+  .magnetic-preview::before {
+    content: ''; width: 6px; height: 6px; background: white; border-radius: 50%;
+    box-shadow: 20px 0 white, 40px 0 white, 0 20px white, 20px 20px white;
+    opacity: 0.5;
+  }
+  
+  .glow-board-preview {
+    background: #222;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  }
+  .glow-board-preview div { background: #050505; }
+  
+  .pixel-trail-preview {
+    background: #000;
+  }
+  .pixel-trail-preview::after {
+    content: ''; position: absolute; top: 50%; left: 50%; width: 10px; height: 10px;
+    background: lime; box-shadow: -15px 5px 0 red, -30px 0 0 blue;
+    opacity: 0.7;
+  }
+
+  .tilt-preview {
+    background: linear-gradient(#0f0 1px, transparent 1px), linear-gradient(90deg, #0f0 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: #000;
+    transform: perspective(100px) rotateX(20deg);
+  }
+  
+  .neon-waves-preview {
+    background: #000;
+    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,255,255,0.1) 10px, rgba(0,255,255,0.1) 20px);
+  }
+
+  /* 2. Spotlight */
+  .spotlight-mask {
+    mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0%, black 150px);
+    -webkit-mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0%, black 150px);
+  }
+
+  /* 5. Parallax */
+  .stars-layer {
+    background-image: radial-gradient(white 1px, transparent 1px);
+    transition: transform 0.1s linear;
+  }
+
+  /* 7. Glow Board */
+  .glow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 1px;
+    background: #333;
+    padding: 1px;
+    width: 100%;
+    height: 100%;
+  }
+  .glow-card {
+    background: #050505;
+    position: relative;
+    height: 100%;
+    min-height: 80px;
+  }
+  .glow-card::before {
+    content: '';
+    position: absolute;
+    inset: 0px;
+    background: radial-gradient(400px circle at var(--x) var(--y), rgba(255,255,255,0.1), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .glow-grid:hover .glow-card::before {
+    opacity: 1;
+  }
+  
+  /* 9. 3D Tilt */
+  .tilt-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 100, 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 100, 0.2) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  
+  /* 6. Magnetic */
+  .magnetic-dot {
+      transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+  }
+</style>
+
+<script is:inline set:html={`window.backgroundsData = ${JSON.stringify(backgrounds).replace(/<\/script>/g, '<\\/script>')};`}></script>
+
+<script>
+  const backgroundsData = window.backgroundsData;
+  let currentEffect = null;
+  let cleanupFunc = null;
+  const mainPreview = document.getElementById('main-preview');
+  const cssLayer = document.getElementById('css-layer');
+  const canvasLayer = document.getElementById('canvas-layer');
+  const styleName = document.getElementById('active-style-name');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  
+  // Initialize with first effect
+  setTimeout(() => loadEffect('mouse-gradient', 'Mouse Gradient'), 100);
+
+  // Card Click Handler
+  document.querySelectorAll('.bg-card-item').forEach(card => {
+    card.addEventListener('click', (e) => {
+        const target = e.target;
+        if(target.closest('.copy-code-btn')) return;
+        
+        const id = card.dataset.id;
+        const name = card.dataset.name;
+        if(id) loadEffect(id, name);
+    });
+  });
+
+  // Copy Code Handler
+  document.querySelectorAll('.copy-code-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+         e.stopPropagation();
+         const button = e.currentTarget;
+         const id = button.dataset.id;
+         
+         const bgData = backgroundsData.find(b => b.id === id);
+         const code = bgData ? bgData.code : '/* Code not found */';
+         
+         try {
+             await copyToClipboard(code);
+             
+             // Success feedback
+             const originalText = button.innerText;
+             button.innerText = 'Copied!';
+             button.classList.add('bg-green-100', 'text-green-700', 'border-green-200');
+             
+             setTimeout(() => {
+                 button.innerText = originalText;
+                 button.classList.remove('bg-green-100', 'text-green-700', 'border-green-200');
+             }, 2000);
+         } catch (err) {
+             console.error('Copy failed:', err);
+             button.innerText = 'Error!';
+             setTimeout(() => button.innerText = 'Copy Code', 2000);
+         }
+      });
+  });
+
+  async function copyToClipboard(text) {
+      // 1. Try modern Clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+              await navigator.clipboard.writeText(text);
+              return;
+          } catch (err) {
+              console.warn('Clipboard API failed, trying fallback...');
+          }
+      }
+      
+      // 2. Fallback to textArea method
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      
+      // Ensure it's not visible but part of DOM
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      textArea.style.top = "0";
+      document.body.appendChild(textArea);
+      
+      textArea.focus();
+      textArea.select();
+      
+      try {
+          const successful = document.execCommand('copy');
+          document.body.removeChild(textArea);
+          if (!successful) throw new Error('execCommand failed');
+      } catch (err) {
+          document.body.removeChild(textArea);
+          throw err;
+      }
+  }
+
+
+
+  // Fullscreen Handler
+  if(fullscreenBtn) {
+      fullscreenBtn.addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+              mainPreview.requestFullscreen().then(() => {
+                  // Reload effect after fullscreen transition
+                  setTimeout(() => {
+                      if(currentEffect) {
+                         const active = currentEffect;
+                         clearEffect(true);
+                         loadEffect(active, styleName.innerText);
+                      }
+                  }, 100);
+              }).catch(err => {
+                  console.error(`Error attempting to enable fullscreen: ${err.message}`);
+              });
+          } else {
+              document.exitFullscreen();
+          }
+      });
+  }
+
+  // Listen for fullscreen change events to handle exit fullscreen
+  document.addEventListener('fullscreenchange', () => {
+      setTimeout(() => {
+          if(currentEffect) {
+              const active = currentEffect;
+              clearEffect(true);
+              loadEffect(active, styleName.innerText);
+          }
+      }, 100);
+  });
+  
+  if(resetBtn) {
+      resetBtn.addEventListener('click', () => {
+         if(currentEffect) {
+             const active = currentEffect;
+             const name = styleName.innerText;
+             clearEffect(true);
+             setTimeout(() => loadEffect(active, name), 50);
+         }
+      });
+  }
+
+  function clearEffect(resetCurrent = false) {
+      if(cleanupFunc) cleanupFunc();
+      cleanupFunc = null;
+      if(resetCurrent) currentEffect = null;
+      
+      if (cssLayer) {
+        cssLayer.innerHTML = '';
+        cssLayer.className = 'absolute inset-0 w-full h-full transition-opacity duration-300 overflow-hidden';
+        cssLayer.removeAttribute('style');
+      }
+      
+      if (canvasLayer) {
+        const ctx = canvasLayer.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, canvasLayer.width, canvasLayer.height);
+        canvasLayer.classList.add('opacity-0');
+      }
+  }
+
+  function loadEffect(id, name) {
+      if(currentEffect === id) return;
+      clearEffect(false); 
+      currentEffect = id;
+      if(name && styleName) styleName.innerText = name;
+      
+      if (!mainPreview) return;
+      
+      switch(id) {
+          case 'mouse-gradient': initMouseGradient(); break;
+          case 'spotlight': initSpotlight(); break;
+          case 'constellation': initConstellation(); break;
+          case 'grid-ripple': initGridRipple(); break;
+          case 'parallax': initParallax(); break;
+          case 'magnetic': initMagnetic(); break;
+          case 'glow-board': initGlowBoard(); break;
+          case 'pixel-trail': initPixelTrail(); break;
+          case '3d-tilt': init3DTilt(); break;
+          case 'neon-waves': initNeonWaves(); break;
+      }
+  }
+
+  // Effect Implementations
+  
+  function initMouseGradient() {
+      if(cssLayer) cssLayer.style.background = '#000';
+      const blob = document.createElement('div');
+      blob.style.cssText = `
+        position: absolute; top: 0; left: 0; width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(100,100,255,0.4) 0%, transparent 70%);
+        transform: translate(-50%, -50%); pointer-events: none; mix-blend-mode: screen;
+      `;
+      if(cssLayer) cssLayer.appendChild(blob);
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          blob.style.left = `${x}px`;
+          blob.style.top = `${y}px`;
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      cleanupFunc = () => mainPreview.removeEventListener('mousemove', onMove);
+  }
+
+  function initSpotlight() {
+      if(cssLayer) {
+        cssLayer.style.backgroundColor = '#000';
+      }
+      
+      // Pattern Layer
+      const pattern = document.createElement('div');
+      pattern.className = 'absolute inset-0 pointer-events-none';
+      pattern.style.backgroundImage = 'radial-gradient(#444 1px, transparent 1px)';
+      pattern.style.backgroundSize = '30px 30px';
+      pattern.style.opacity = '0.5';
+      if(cssLayer) cssLayer.appendChild(pattern);
+
+      // Spotlight Overlay
+      const spotlight = document.createElement('div');
+      spotlight.className = 'absolute inset-0 pointer-events-none';
+      // Use a radial gradient that is transparent in center and black elsewhere
+      spotlight.style.background = 'radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 0%, black 150px)';
+      if(cssLayer) cssLayer.appendChild(spotlight);
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          spotlight.style.setProperty('--x', `${x}px`);
+          spotlight.style.setProperty('--y', `${y}px`);
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      cleanupFunc = () => mainPreview.removeEventListener('mousemove', onMove);
+  }
+
+  function initConstellation() {
+      if(canvasLayer) canvasLayer.classList.remove('opacity-0');
+      const ctx = canvasLayer.getContext('2d');
+      if(!ctx) return;
+      
+      let width = mainPreview.clientWidth;
+      let height = mainPreview.clientHeight;
+      canvasLayer.width = width;
+      canvasLayer.height = height;
+      
+      const particles = [];
+      const particleCount = 60;
+      
+      for(let i=0; i<particleCount; i++) {
+          particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * 0.5,
+              vy: (Math.random() - 0.5) * 0.5,
+              size: Math.random() * 2 + 1
+          });
+      }
+      
+      let mouse = { x: -1000, y: -1000 };
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          mouse.x = e.clientX - rect.left;
+          mouse.y = e.clientY - rect.top;
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      
+      let animationId;
+      function animate() {
+          if(!ctx) return;
+          ctx.clearRect(0,0,width,height);
+          ctx.fillStyle = '#fff';
+          ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+          
+          particles.forEach(p => {
+              p.x += p.vx;
+              p.y += p.vy;
+              
+              if(p.x < 0 || p.x > width) p.vx *= -1;
+              if(p.y < 0 || p.y > height) p.vy *= -1;
+              
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              ctx.fill();
+              
+              const dx = p.x - mouse.x;
+              const dy = p.y - mouse.y;
+              const dist = Math.sqrt(dx*dx + dy*dy);
+              
+              if(dist < 150) {
+                  ctx.beginPath();
+                  ctx.moveTo(p.x, p.y);
+                  ctx.lineTo(mouse.x, mouse.y);
+                  ctx.stroke();
+              }
+          });
+          
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function initGridRipple() {
+      if(canvasLayer) canvasLayer.classList.remove('opacity-0');
+      const ctx = canvasLayer.getContext('2d');
+      if(!ctx) return;
+
+      let width = mainPreview.clientWidth;
+      let height = mainPreview.clientHeight;
+      canvasLayer.width = width;
+      canvasLayer.height = height;
+
+      const cols = 25;
+      const rows = 15;
+      const points = [];
+      
+      for(let i=0; i<=cols; i++) {
+          for(let j=0; j<=rows; j++) {
+              points.push({
+                  x: (i / cols) * width,
+                  y: (j / rows) * height,
+                  ox: (i / cols) * width,
+                  oy: (j / rows) * height
+              });
+          }
+      }
+
+      let mouse = { x: -1000, y: -1000 };
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          mouse.x = e.clientX - rect.left;
+          mouse.y = e.clientY - rect.top;
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      
+      let animationId;
+      function animate() {
+          if(!ctx) return;
+          ctx.clearRect(0,0,width,height);
+          ctx.fillStyle = '#448aff';
+          
+          points.forEach(p => {
+              const dx = p.ox - mouse.x;
+              const dy = p.oy - mouse.y;
+              const dist = Math.sqrt(dx*dx + dy*dy);
+              const maxDist = 150;
+              
+              if(dist < maxDist) {
+                   const angle = Math.atan2(dy, dx);
+                   const force = (maxDist - dist) / maxDist;
+                   const push = force * 40;
+                   p.x = p.ox + Math.cos(angle) * push;
+                   p.y = p.oy + Math.sin(angle) * push;
+              } else {
+                   p.x += (p.ox - p.x) * 0.1;
+                   p.y += (p.oy - p.y) * 0.1;
+              }
+              
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+              ctx.fill();
+          });
+          
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function initParallax() {
+      if(cssLayer) {
+        cssLayer.style.background = '#0b0b1a';
+        cssLayer.style.overflow = 'hidden';
+      }
+      
+      const layers = [1, 2, 3];
+      layers.forEach(i => {
+          const div = document.createElement('div');
+          div.className = `stars-layer absolute inset-[-100px] layer-${i} pointer-events-none`;
+          div.style.backgroundSize = `${i * 100}px ${i * 100}px`;
+          div.style.backgroundImage = "radial-gradient(circle, white 2px, transparent 3px)";
+          div.style.opacity = (0.5 + i * 0.2).toString(); // Increased opacity
+          if(cssLayer) cssLayer.appendChild(div);
+      });
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          const x = (e.clientX - rect.left) - rect.width/2;
+          const y = (e.clientY - rect.top) - rect.height/2;
+          
+          layers.forEach(i => {
+              if(cssLayer) {
+                const layer = cssLayer.querySelector(`.layer-${i}`);
+                if(layer) layer.style.transform = `translate(${-x * i * 0.05}px, ${-y * i * 0.05}px)`;
+              }
+          });
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      cleanupFunc = () => mainPreview.removeEventListener('mousemove', onMove);
+  }
+
+  function initMagnetic() {
+      if(cssLayer) {
+        cssLayer.style.background = '#111';
+        cssLayer.style.display = 'grid';
+        cssLayer.style.gridTemplateColumns = 'repeat(40 , 0.5fr)';
+        cssLayer.style.gridTemplateRows = 'repeat(20, 0.5fr)';
+      }
+      
+      const dots = [];
+      for(let i=0; i<800; i++) {
+          const dotWrapper = document.createElement('div');
+          dotWrapper.className = 'flex items-center justify-center';
+          const dot = document.createElement('div');
+          dot.className = 'w-1 h-1 bg-white rounded-full magnetic-dot opacity-30';
+          dotWrapper.appendChild(dot);
+          if(cssLayer) cssLayer.appendChild(dotWrapper);
+          dots.push(dot);
+      }
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+          
+          dots.forEach(dot => {
+              const dotRect = dot.getBoundingClientRect();
+              const dx = (dotRect.left + dotRect.width/2) - (rect.left + mx);
+              const dy = (dotRect.top + dotRect.height/2) - (rect.top + my);
+              const dist = Math.sqrt(dx*dx + dy*dy);
+              
+              if(dist < 100) {
+                  const strength = (100 - dist) / 100;
+                  const tx = dx * strength * 0.5;
+                  const ty = dy * strength * 0.5;
+                  dot.style.transform = `translate(${tx}px, ${ty}px)`;
+                  dot.style.opacity = '1';
+              } else {
+                  dot.style.transform = 'translate(0,0)';
+                  dot.style.opacity = '0.3';
+              }
+          });
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      cleanupFunc = () => mainPreview.removeEventListener('mousemove', onMove);
+  }
+
+  function initGlowBoard() {
+      if(cssLayer) cssLayer.innerHTML = '';
+      
+      const container = document.createElement('div');
+      container.className = 'w-full h-full p-px bg-[#222] overflow-hidden';
+      if(cssLayer) cssLayer.appendChild(container);
+      
+      // Calculate active area size
+      const rect = mainPreview.getBoundingClientRect();
+      const colSize = 60;
+      const cols = Math.ceil(rect.width / colSize); 
+      const rows = Math.ceil(rect.height / colSize); 
+      
+      const grid = document.createElement('div');
+      grid.className = 'glow-grid w-full h-full'; 
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      grid.style.gap = '1px';
+      container.appendChild(grid);
+      
+      const cards = [];
+      
+      for(let i=0; i<cols*rows; i++) {
+          const card = document.createElement('div');
+          card.className = 'bg-[#151515] relative w-full h-full glow-card';
+          // Inner glow element
+          const glow = document.createElement('div');
+          glow.className = 'glow-effect absolute inset-0 transition-opacity duration-300 pointer-events-none opacity-0';
+          glow.style.background = 'radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%)';
+          card.appendChild(glow);
+          
+          grid.appendChild(card);
+          cards.push(card);
+      }
+      
+      const onMove = (e) => {
+         // Per-card update for reliability
+         cards.forEach(card => {
+            const r = card.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            
+            // Allow glow to show if mouse is near
+            const glow = card.querySelector('.glow-effect');
+            if(glow) {
+                // Calculate distance from center of card for better feel
+                const dist = Math.hypot(x - r.width/2, y - r.height/2);
+                if(dist < 150) {
+                     glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15), transparent 70%)`;
+                     glow.style.opacity = '1';
+                } else {
+                     glow.style.opacity = '0';
+                }
+            }
+         });
+      };
+
+      mainPreview.addEventListener('mousemove', onMove);
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+      };
+  }
+
+  function initPixelTrail() {
+      if(canvasLayer) canvasLayer.classList.remove('opacity-0');
+      const ctx = canvasLayer.getContext('2d');
+      if(!ctx) return;
+      
+      let width = mainPreview.clientWidth;
+      let height = mainPreview.clientHeight;
+      canvasLayer.width = width;
+      canvasLayer.height = height;
+      
+      const trail = [];
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          trail.push({
+              x: e.clientX - rect.left,
+              y: e.clientY - rect.top,
+              age: 1.0,
+              size: Math.random() * 10 + 5,
+              color: `hsl(${Math.random()*360}, 100%, 50%)` 
+          });
+      };
+      mainPreview.addEventListener('mousemove', onMove);
+      
+      let animationId;
+      function animate() {
+          if(!ctx) return;
+          ctx.clearRect(0,0,width,height);
+          
+          for(let i=trail.length-1; i>=0; i--) {
+              const p = trail[i];
+              p.age -= 0.02;
+              if(p.age <= 0) {
+                  trail.splice(i, 1);
+                  continue;
+              }
+              
+              ctx.fillStyle = p.color;
+              ctx.globalAlpha = p.age;
+              ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+          }
+          ctx.globalAlpha = 1;
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  function init3DTilt() {
+      if(cssLayer) {
+        cssLayer.style.perspective = '1000px';
+        cssLayer.style.background = '#000';
+        cssLayer.style.overflow = 'hidden'; 
+      }
+      
+      const container = document.createElement('div');
+      container.className = 'w-full h-full flex items-center justify-center';
+      container.style.transformStyle = 'preserve-3d';
+      if(cssLayer) cssLayer.appendChild(container);
+      
+      const plane = document.createElement('div');
+      plane.className = 'w-[600px] h-[600px] tilt-grid border border-green-500/30 rounded-lg shadow-2xl';
+      container.appendChild(plane);
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          
+          container.style.transform = `rotateY(${x * 20}deg) rotateX(${-y * 20}deg)`;
+      };
+      
+      mainPreview.addEventListener('mousemove', onMove);
+      cleanupFunc = () => mainPreview.removeEventListener('mousemove', onMove);
+  }
+
+  function initNeonWaves() {
+      if(canvasLayer) canvasLayer.classList.remove('opacity-0');
+      const ctx = canvasLayer.getContext('2d');
+      if(!ctx) return;
+      
+      let width = mainPreview.clientWidth;
+      let height = mainPreview.clientHeight;
+      canvasLayer.width = width;
+      canvasLayer.height = height;
+      
+      let mouse = { x: -1000, y: height/2 };
+      
+      const onMove = (e) => {
+          const rect = mainPreview.getBoundingClientRect();
+          mouse.x = e.clientX - rect.left;
+          mouse.y = e.clientY - rect.top;
+      };
+      mainPreview.addEventListener('mousemove', onMove);
+      
+      let time = 0;
+      let animationId;
+      
+      function animate() {
+          if(!ctx) return;
+          ctx.clearRect(0,0,width,height);
+          ctx.lineWidth = 2;
+          
+          const lines = 20;
+          
+          for(let i=0; i<lines; i++) {
+              ctx.beginPath();
+              let hue = (time + i * 10) % 360;
+              ctx.strokeStyle = `hsl(${hue}, 70%, 50%)`;
+              
+              for(let x=0; x<width; x+=5) {
+                  const dist = Math.abs(x - mouse.x);
+                  const mouseInfluence = Math.max(0, (200 - dist) / 200);
+                  
+                  const y = height/2 + 
+                            Math.sin(x * 0.01 + time * 0.05 + i * 0.5) * 50 +
+                            (i - lines/2) * 10 + 
+                            Math.sin(x * 0.05 + time * 0.1) * 50 * mouseInfluence;
+                  
+                  if(x===0) ctx.moveTo(x,y);
+                  else ctx.lineTo(x,y);
+              }
+              ctx.stroke();
+          }
+          
+          time += 0.5;
+          animationId = requestAnimationFrame(animate);
+      }
+      animate();
+      
+      cleanupFunc = () => {
+          mainPreview.removeEventListener('mousemove', onMove);
+          cancelAnimationFrame(animationId);
+      };
+  }
+
+  // Handle Resize
+  window.addEventListener('resize', () => {
+      if(currentEffect) {
+          const active = currentEffect;
+          const name = styleName.innerText;
+          clearEffect(true);
+          setTimeout(() => loadEffect(active, name), 100);
+      }
+  });
+
+</script>

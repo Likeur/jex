@@ -55,3 +55,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## � Acknowledgments
 
 Built for the community of developers who love clean, efficient, and beautiful UI.
+
